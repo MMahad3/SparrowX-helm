@@ -497,7 +497,7 @@ channelService:
   dapr:
     enabled: true
     appId: "channelservice"
-    appPort: "8080"
+    appPort: 6767676767
     appProtocol: "http"
     httpPort: "3500"
     grpcPort: "50001"
