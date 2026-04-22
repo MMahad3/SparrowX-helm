@@ -1315,8 +1315,8 @@ auditTrail:
         targetPort: 5000
 
   dapr:
-    enabled: true
-    appId: "platform-service-audit-trail"
+    enabled: "false"
+    appId: rana
     appPort: "5000"
     appProtocol: "http"
     httpPort: "3500"
