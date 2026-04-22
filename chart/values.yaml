@@ -14,7 +14,7 @@ global:
   infraNamespace: "platformx-infra"
   obsNamespace: "platformx-observability"
   imagePullSecrets:
-     - docker-registry-secret  # Existing pull secret names (used when secrets.dockerRegistry.enabled=false)
+  - docker-registry-secret     # Existing pull secret names (used when secrets.dockerRegistry.enabled=false)
   dockerRegistry: devopstps
   image:
     tag: ""  # REQUIRED: set to a pinned tag (e.g. "v1.2.3"). Using "latest" prevents rollbacks.
@@ -29,13 +29,13 @@ global:
     sidecarCpuRequest: "100m"
 
   observability:
-    zipkinEndpoint: &zipkinEndpoint
+    zipkinEndpoint: &zipkinEndpoint 
       http://zipkin.platformx-observability.svc.cluster.local:9411/api/v2/spans
-    otelCollectorGrpcEndpoint: &otelGrpcEndpoint
+    otelCollectorGrpcEndpoint: &otelGrpcEndpoint 
       http://otel-collector-opentelemetry-collector.platformx-observability.svc.cluster.local:4317
-    otelCollectorEndpoint: &otelCollectorEndpoint
+    otelCollectorEndpoint: &otelCollectorEndpoint 
       http://otel-collector-opentelemetry-collector.platformx-observability.svc.cluster.local:4318
-    grafanaEndPoint: &grafanaEndPoint
+    grafanaEndPoint: &grafanaEndPoint 
       http://grafana.platformx-observability.svc.cluster.local:3000
     grafanaUser: "admin"
     grafanaPassword: "admin"
@@ -60,7 +60,8 @@ global:
       username: &postgresUser "postgres"
       password: &postgresPassword "postgres"
       database: &postgresDatabase "platformdb"
-      schemaNames: &postgresSchemas "channel messagestore audit usermanagement configuration notificationgateway batch cas host lookup errormanagement"
+      schemaNames: &postgresSchemas "channel messagestore audit usermanagement configuration
+        notificationgateway batch cas host lookup errormanagement"
 
     vault:
       host: &vaultHost "http://vault.platformx-infra.svc.cluster.local"
@@ -92,28 +93,28 @@ global:
   # ===========================================================================
   shared:
     # ── Dapr component names ─────────────────────────────────────────────────
-    daprPubsubName:  &daprPubsubName  "platformx-pubsub"
-    daprStateStore:  &daprStateStore  "redis-state"
+    daprPubsubName: &daprPubsubName "platformx-pubsub"
+    daprStateStore: &daprStateStore "redis-state"
     daprSecretStore: &daprSecretStore "vault-secretstore"
 
     # ── Keycloak ─────────────────────────────────────────────────────────────
-    keycloakUrl:    &keycloakUrl    "https://keycloakdev.platformxcloud.com"
-    keycloakRealm:  &keycloakRealm  "platformx"
+    keycloakUrl: &keycloakUrl "https://keycloakdev.platformxcloud.com"
+    keycloakRealm: &keycloakRealm "platformx"
     keycloakIssuer: &keycloakIssuer "https://keycloakdev.platformxcloud.com/realms/platformx"
 
     # ── Metabase ─────────────────────────────────────────────────────────────
     metabaseInternalUrl: &metabaseInternalUrl "http://metabase.platformx-infra.svc.cluster.local:3000"
-    metabasePublicUrl:   &metabasePublicUrl   "https://metabase.tpsonline.com"
-    metabaseApiKey:      &metabaseApiKey      "mb_5Xe85x0KFbCYnCtmPAO1dCKL4c9Cac6dgF84EovqxFg="
-    metabaseSecretKey:   &metabaseSecretKey   "1b3f707c86b7fe3e2dfcb079ef2dd49897f0a09c62d2da75a283230709625b81"
+    metabasePublicUrl: &metabasePublicUrl "https://metabase.tpsonline.com"
+    metabaseApiKey: &metabaseApiKey "mb_5Xe85x0KFbCYnCtmPAO1dCKL4c9Cac6dgF84EovqxFg="
+    metabaseSecretKey: &metabaseSecretKey "1b3f707c86b7fe3e2dfcb079ef2dd49897f0a09c62d2da75a283230709625b81"
 
     # ── Novu ─────────────────────────────────────────────────────────────────
     novuApiUrl: &novuApiUrl "http://novu-api.platformx-infra.svc.cluster.local:3001"
     novuApiKey: &novuApiKey "2da16926d4917d9977118ec1e24335cb"
 
     # ── Flagsmith ─────────────────────────────────────────────────────────────
-    flagsmithEnvKey:   &flagsmithEnvKey   "ser.Q98WZ3Yv9rTFcJfSUbQuTR"
-    flagsmithApiUrl:   &flagsmithApiUrl   "http://flagsmith-api.platformx-infra.svc.cluster.local:8000"
+    flagsmithEnvKey: &flagsmithEnvKey "ser.Q98WZ3Yv9rTFcJfSUbQuTR"
+    flagsmithApiUrl: &flagsmithApiUrl "http://flagsmith-api.platformx-infra.svc.cluster.local:8000"
     flagsmithApiV1Url: &flagsmithApiV1Url "http://flagsmith-api.platformx-infra.svc.cluster.local:8000/api/v1/"
 
     # ── Loki ─────────────────────────────────────────────────────────────────
@@ -123,27 +124,31 @@ global:
     otelGrpcHostOnly: &otelGrpcHostOnly "otel-collector-opentelemetry-collector.platformx-observability.svc.cluster.local:4317"
 
     # ── Inter-service address templates (resolved at render time via tpl) ─────
-    messageStoreGrpc:     &msgStoreGrpc     "{{ include \"sparrowx.messageStore.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local:8081"
-    messageStoreHost:     &msgStoreHost     "{{ include \"sparrowx.messageStore.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local"
-    messageTransformGrpc: &msgTransformGrpc "{{ include \"sparrowx.messageTransformation.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local:50053"
-    commsIpsGrpc:         &commsIpsGrpcTpl  "{{ include \"sparrowx.raastCommsIps.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local:50051"
+    messageStoreGrpc: &msgStoreGrpc "{{ include \"sparrowx.messageStore.name\" . }}.{{
+      .Release.Namespace }}.svc.cluster.local:8081"
+    messageStoreHost: &msgStoreHost "{{ include \"sparrowx.messageStore.name\" . }}.{{
+      .Release.Namespace }}.svc.cluster.local"
+    messageTransformGrpc: &msgTransformGrpc "{{ include \"sparrowx.messageTransformation.name\"\
+      \ . }}.{{ .Release.Namespace }}.svc.cluster.local:50053"
+    commsIpsGrpc: &commsIpsGrpcTpl "{{ include \"sparrowx.raastCommsIps.name\" . }}.{{
+      .Release.Namespace }}.svc.cluster.local:50051"
 
     # ── Dapr sidecar localhost addresses ──────────────────────────────────────
-    daprHttpSidecar:      &daprHttpSidecar      "http://localhost:3500"
-    daprGrpcSidecar:      &daprGrpcSidecar      "http://localhost:50001"
+    daprHttpSidecar: &daprHttpSidecar "http://localhost:3500"
+    daprGrpcSidecar: &daprGrpcSidecar "http://localhost:50001"
 
     # ── Common Dapr invoke paths ─────────────────────────────────────────────
     channelServiceDaprUrl: &channelServiceDaprUrl "http://localhost:3500/v1.0/invoke/channelservice/method/api/v1/channels"
-    batchServiceDaprUrl:   &batchServiceDaprUrl   "http://localhost:3500/v1.0/invoke/platform-service-batch/method/api/v1"
-    hostSindhBankDaprUrl:  &hostSindhBankDaprUrl  "http://localhost:3500/v1.0/invoke/host-service-sindh-bank/method"
-    messageStoreDaprUrl:   &messageStoreDaprUrl   "http://localhost:3500/v1.0/invoke/messagestore/method"
+    batchServiceDaprUrl: &batchServiceDaprUrl "http://localhost:3500/v1.0/invoke/platform-service-batch/method/api/v1"
+    hostSindhBankDaprUrl: &hostSindhBankDaprUrl "http://localhost:3500/v1.0/invoke/host-service-sindh-bank/method"
+    messageStoreDaprUrl: &messageStoreDaprUrl "http://localhost:3500/v1.0/invoke/messagestore/method"
 
     # ── Service app IDs ───────────────────────────────────────────────────────
-    platformBatchAppId:  &platformBatchAppId  "platform-service-batch"
-    hostSindhBankAppId:  &hostSindhBankAppId  "host-service-sindh-bank"
-    msgTransformAppId:   &msgTransformAppId   "messagetransformation"
-    auditEventsSub:      &auditEventsSub      "audit-trail-service"
-    messageStoreAppId:   &messageStoreAppId   "messagestore"
+    platformBatchAppId: &platformBatchAppId "platform-service-batch"
+    hostSindhBankAppId: &hostSindhBankAppId "host-service-sindh-bank"
+    msgTransformAppId: &msgTransformAppId "messagetransformation"
+    auditEventsSub: &auditEventsSub "audit-trail-service"
+    messageStoreAppId: &messageStoreAppId "messagestore"
 
     # ── Log file path ─────────────────────────────────────────────────────────
     appLogFilePath: &appLogFilePath "/app/logs/application.log"
@@ -152,27 +157,30 @@ global:
     managementEndpoints: &managementEndpoints "health,info,metrics,prometheus"
 
     # ── RAAST comms family shared config ─────────────────────────────────────
-    raastCommsHttpEndpoint:    &raastCommsHttpEndpoint    "http://raast-simulator:7001/output"
-    raastCommsJavaOpts:        &raastCommsJavaOpts        "-Xms512m -Xmx1024m"
+    raastCommsHttpEndpoint: &raastCommsHttpEndpoint "http://raast-simulator:7001/output"
+    raastCommsJavaOpts: &raastCommsJavaOpts "-Xms512m -Xmx1024m"
     raastCommsOtelPropagators: &raastCommsOtelPropagators "tracecontext,baggage"
-    raastCommsOtelResources:   &raastCommsOtelResources   "service.name=raast-comms,deployment.environment=production"
-    p2pSendingQueue:           &p2pSendingQueue           "p2p-sending-queue"
-    p2pReceivingQueue:         &p2pReceivingQueue         "p2p-receiving-queue"
+    raastCommsOtelResources: &raastCommsOtelResources "service.name=raast-comms,deployment.environment=production"
+    p2pSendingQueue: &p2pSendingQueue "p2p-sending-queue"
+    p2pReceivingQueue: &p2pReceivingQueue "p2p-receiving-queue"
 
     # ── Cross-service shared identifiers ────────────────────────────────────
     raastServiceTokenGrpc: &raastServiceTokenGrpc "raast-service-token"
     raastBatchProjectName: &raastBatchProjectName "raast-batch-workflows"
-    platformNetworkName:   &platformNetworkName   "platform-network"
+    platformNetworkName: &platformNetworkName "platform-network"
     transactionEventsTopic: &transactionEventsTopic "transaction-events"
 
     # ── Cross-service template URLs ──────────────────────────────────────────
-    raastBackendUrl:          &raastBackendUrl          "http://{{ include \"sparrowx.raastSimulatorBackend.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local:7002"
-    notifGatewayInternalUrl:  &notifGatewayInternalUrl  "http://{{ include \"sparrowx.notificationGateway.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local:8080"
-    raastRedisHost:           &raastRedisHost            "{{ include \"sparrowx.redisRaast.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local"
-    keycloakInternalUrl:      &keycloakInternalUrl      "http://keycloak-dev.platformx-infra.svc.cluster.local:8080"
-    keycloakInternalIssuer:   &keycloakInternalIssuer "http://keycloak-dev.platformx-infra.svc.cluster.local:8080/realms/platformx"
-    cpmKeycloakIssuer:        &cpmKeycloakIssuer      "https://cpmkeycloakdev.tpsonline.com/realms/master"
-    tempoEndpoint:            &tempoEndpoint          "http://tempo.platformx-observability.svc.cluster.local:3200"
+    raastBackendUrl: &raastBackendUrl "http://{{ include \"sparrowx.raastSimulatorBackend.name\"\
+      \ . }}.{{ .Release.Namespace }}.svc.cluster.local:7002"
+    notifGatewayInternalUrl: &notifGatewayInternalUrl "http://{{ include \"sparrowx.notificationGateway.name\"\
+      \ . }}.{{ .Release.Namespace }}.svc.cluster.local:8080"
+    raastRedisHost: &raastRedisHost "{{ include \"sparrowx.redisRaast.name\" . }}.{{
+      .Release.Namespace }}.svc.cluster.local"
+    keycloakInternalUrl: &keycloakInternalUrl "http://keycloak-dev.platformx-infra.svc.cluster.local:8080"
+    keycloakInternalIssuer: &keycloakInternalIssuer "http://keycloak-dev.platformx-infra.svc.cluster.local:8080/realms/platformx"
+    cpmKeycloakIssuer: &cpmKeycloakIssuer "https://cpmkeycloakdev.tpsonline.com/realms/master"
+    tempoEndpoint: &tempoEndpoint "http://tempo.platformx-observability.svc.cluster.local:3200"
 
     # ── Observability OTEL resource attributes ───────────────────────────────
     otelResourceAttrsDev: &otelResourceAttrsDev "deployment.environment=development,service.version=1.0.0"
@@ -230,7 +238,8 @@ secrets:
   vault:
     enabled: true
     nameOverride: ""  # generated: <release>-vault-token-secret
-    rootToken: *vaultToken             # Vault root token from platformx-infra
+    rootToken: *vaultToken
+                                       # Vault root token from platformx-infra
   redis:
     enabled: true
     nameOverride: ""                  # generated: <release>-redis-password-secret
@@ -269,7 +278,7 @@ dapr:
       deliveryDeadLetterTopic: sparrowx-dead-letter-queue
       deadLetterTTL: 168h
       deadLetterQueueConsumerGroupName: sparrowx-dlq-consumer
-      
+
     state:
       enabled: true
       name: redis-state
@@ -292,7 +301,6 @@ dashboardImportJob:
   ttlSecondsAfterFinished: 600
   backoffLimit: 1
   grafanaImporterImage: "grafana/grafana:latest"
-  
   grafana:
     # Grafana URL - auto-constructed from global.obsNamespace if not set
     url: ""  # Default: http://grafana.platformx-observability.svc.cluster.local:3000
@@ -337,13 +345,12 @@ backoffice:
   podSecurityContext: {}
 
   containerSecurityContext: {}
-  
   service:
     type: ClusterIP
     ports:
-      - name: http
-        port: 3000
-        targetPort: 3000
+    - name: http
+      port: 3000
+      targetPort: 3000
 
   resources:
     requests:
@@ -371,19 +378,19 @@ backoffice:
     healthcheckPath: "/"
     successCodes: "200,301,302"
     hosts:
-      - host: "backoffice.tpsonline.com"
-        paths:
-          - path: /
-            pathType: Prefix
+    - host: "backoffice.tpsonline.com"
+      paths:
+      - path: /
+        pathType: Prefix
     tls:
-      - secretName: backoffice-tls
-        hosts:
-          - "backoffice.tpsonline.com"
+    - secretName: backoffice-tls
+      hosts:
+      - "backoffice.tpsonline.com"
 
   route:
     enabled: true
     hosts:
-      - host: "backoffice.tpsonline.com"
+    - host: "backoffice.tpsonline.com"
     tls:
       insecureEdgeTerminationPolicy: "Redirect"
       tlsTermination: "edge"
@@ -396,8 +403,10 @@ backoffice:
     AD_KEYCLOAK_ISSUER: *keycloakIssuer
     ADMIN_PASSWORD: "tpstps_123"
     ADMIN_USERNAME: "admin"
-    AUDIT_TRAIL_API_URL: "http://{{ include \"sparrowx.auditTrail.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local:5000"
-    AUTH_API_URL: "http://{{ include \"sparrowx.userManagement.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local:5000/api/v1"
+    AUDIT_TRAIL_API_URL: "http://{{ include \"sparrowx.auditTrail.name\" . }}.{{ .Release.Namespace
+      }}.svc.cluster.local:5000"
+    AUTH_API_URL: "http://{{ include \"sparrowx.userManagement.name\" . }}.{{ .Release.Namespace
+      }}.svc.cluster.local:5000/api/v1"
     BACKEND_PORT: "5000"
     BACKOFFICE_DB_HOST: "postgresql"
     BACKOFFICE_DB_NAME: "product-db"
@@ -405,16 +414,20 @@ backoffice:
     BACKOFFICE_DB_USER: "postgres"
     BACKOFFICE_REDIS_HOST: *redisHost
     BACKOFFICE_REDIS_PORT: *redisPort
-    CHANNEL_API_URL: "http://{{ include \"sparrowx.channelService.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local:8080"
-    CONFIGURATION_API_URL: "http://{{ include \"sparrowx.configuration.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local:8080/api/v1"
+    CHANNEL_API_URL: "http://{{ include \"sparrowx.channelService.name\" . }}.{{ .Release.Namespace
+      }}.svc.cluster.local:8080"
+    CONFIGURATION_API_URL: "http://{{ include \"sparrowx.configuration.name\" . }}.{{
+      .Release.Namespace }}.svc.cluster.local:8080/api/v1"
     DEFAULT_SSO_USER_PASSWORD: "default"
     FLAGSMITH_API_URL: *flagsmithApiUrl
     FLAGSMITH_ENVIRONMENT_KEY: *flagsmithEnvKey
     KEYCLOAK_CLIENT_ID: "backoffice"
     KEYCLOAK_REALM: *keycloakRealm
     KEYCLOAK_URL: *keycloakUrl
-    LDAP_API_URL: "http://{{ include \"sparrowx.raastServiceLdap.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local:3000"
-    LOOKUP_API_URL: "{{ include \"sparrowx.lookupService.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local:5000/api/v1/lookups/"
+    LDAP_API_URL: "http://{{ include \"sparrowx.raastServiceLdap.name\" . }}.{{ .Release.Namespace
+      }}.svc.cluster.local:3000"
+    LOOKUP_API_URL: "{{ include \"sparrowx.lookupService.name\" . }}.{{ .Release.Namespace
+      }}.svc.cluster.local:5000/api/v1/lookups/"
     MAIN_APP_PORT: "3000"
     METABASE_API_KEY: *metabaseApiKey
     METABASE_BATCH_INSTRUCTIONS_QUESTION_ID: "52"
@@ -449,13 +462,16 @@ backoffice:
     OPERATOR_ROLE_ID: "db6b7e6c-40b2-4189-8614-1e4a9a02697f"
     PERSONALIZATION_PORT: "3001"
     PERSONALIZATION_URL: "http://personalization:3001"
-    ROUTING_API_URL: "http://{{ include \"sparrowx.routing.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local:8080"
+    ROUTING_API_URL: "http://{{ include \"sparrowx.routing.name\" . }}.{{ .Release.Namespace
+      }}.svc.cluster.local:8080"
 
   secrets:
     BACKOFFICE_DB_PWD: cG9zdGdyZXM=
     BACKOFFICE_REDIS_PASSWORD: cmVkaXNTZWN1cmVQYXNzd29yZDEyMw==
-    JWT_SECRET: eW91ci1zdXBlci1zZWNyZXQtand0LWtleS1jaGFuZ2UtdGhpcy1pbi1wcm9kdWN0aW9u
-    METABASE_SECRET_KEY: MGRkNTZhODg0YjYxYTgzMzYyMDZjNjFmNDQxMjI2ODliYTM2NTQ0ODczN2M0MzQ5YzAyY2U4MWNjNTgzMWEyYQ==
+    JWT_SECRET: 
+      eW91ci1zdXBlci1zZWNyZXQtand0LWtleS1jaGFuZ2UtdGhpcy1pbi1wcm9kdWN0aW9u
+    METABASE_SECRET_KEY: 
+      MGRkNTZhODg0YjYxYTgzMzYyMDZjNjFmNDQxMjI2ODliYTM2NTQ0ODczN2M0MzQ5YzAyY2U4MWNjNTgzMWEyYQ==
 
 # ==============================================================================
 # CHANNEL SERVICE
@@ -484,20 +500,20 @@ channelService:
   service:
     type: ClusterIP
     ports:
-      - name: http
-        port: 8080
-        targetPort: 8080
-      - name: https
-        port: 8443
-        targetPort: 8443
-      - name: metrics
-        port: 9091
-        targetPort: 9091
+    - name: http
+      port: 8080
+      targetPort: 8080
+    - name: https
+      port: 8443
+      targetPort: 8443
+    - name: metrics
+      port: 9091
+      targetPort: 9091
 
   dapr:
     enabled: true
     appId: "channelservice"
-    appPort: "8080"
+    appPort: "69696969"
     appProtocol: "http"
     httpPort: "3500"
     grpcPort: "50001"
@@ -545,7 +561,8 @@ channelService:
     # DATABASE_PASSWORD: *postgresPassword
     OTEL_EXPORTER_OTLP_ENDPOINT: *otelGrpcEndpoint
     OTEL_EXPORTER_ZIPKIN_ENDPOINT: *zipkinEndpoint
-    OTEL_RESOURCE_ATTRIBUTES: deployment.environment=development,service.instance.id=channelservice-1
+    OTEL_RESOURCE_ATTRIBUTES: 
+      deployment.environment=development,service.instance.id=channelservice-1
     OTEL_SERVICE_NAME: ChannelService
     Observability__EnableMetrics: "true"
     Observability__EnableTracing: "true"
@@ -584,15 +601,15 @@ messageStore:
   service:
     type: ClusterIP
     ports:
-      - name: http
-        port: 8080
-        targetPort: 8080
-      - name: grpc
-        port: 8081
-        targetPort: 8081
-      - name: metrics
-        port: 9090
-        targetPort: 9090
+    - name: http
+      port: 8080
+      targetPort: 8080
+    - name: grpc
+      port: 8081
+      targetPort: 8081
+    - name: metrics
+      port: 9090
+      targetPort: 9090
 
   dapr:
     enabled: true
@@ -696,18 +713,18 @@ messageTransformation:
   service:
     type: ClusterIP
     ports:
-      - name: http
-        port: 9191
-        targetPort: 9191
-      - name: grpc
-        port: 50053
-        targetPort: 50053
-      - name: metrics
-        port: 9090
-        targetPort: 9090
-      - name: TCP
-        port: 8080
-        targetPort: 8080
+    - name: http
+      port: 9191
+      targetPort: 9191
+    - name: grpc
+      port: 50053
+      targetPort: 50053
+    - name: metrics
+      port: 9090
+      targetPort: 9090
+    - name: TCP
+      port: 8080
+      targetPort: 8080
 
   dapr:
     enabled: true
@@ -761,7 +778,8 @@ messageTransformation:
     OTEL_EXPORTER_OTLP_PROTOCOL: grpc
     OTEL_LOGS_EXPORTER: otlp
     OTEL_METRICS_EXPORTER: otlp
-    OTEL_RESOURCE_ATTRIBUTES: service.name=raast-service-message-transformation,deployment.environment=production
+    OTEL_RESOURCE_ATTRIBUTES: 
+      service.name=raast-service-message-transformation,deployment.environment=production
     OTEL_SERVICE_NAME: raast-service-message-transformation
     OTEL_TRACES_EXPORTER: otlp
     # REDIS_HOST: *redisHost
@@ -788,7 +806,7 @@ messageTransformation:
     # Base64-encoded PEM certificate (cert chain for this service)
     certificate:
     # Base64-encoded PEM private key
-    privateKey: 
+    privateKey:
 
 # ==============================================================================
 # NOVU
@@ -834,18 +852,18 @@ restServer:
   service:
     type: ClusterIP
     ports:
-      - name: http
-        port: 8080
-        targetPort: 8080
-      - name: grpc
-        port: 6565
-        targetPort: 6565
-      - name: dapr-metrics
-        port: 9090
-        targetPort: 9090
-      - name: metrics
-        port: 9191
-        targetPort: 9191
+    - name: http
+      port: 8080
+      targetPort: 8080
+    - name: grpc
+      port: 6565
+      targetPort: 6565
+    - name: dapr-metrics
+      port: 9090
+      targetPort: 9090
+    - name: metrics
+      port: 9191
+      targetPort: 9191
 
   dapr:
     enabled: true
@@ -880,19 +898,19 @@ restServer:
     enabled: false
     healthcheckPath: "/health"
     hosts:
-      - host: service.tpsonline.com
-        paths:
-          - path: /
-            pathType: Prefix
+    - host: service.tpsonline.com
+      paths:
+      - path: /
+        pathType: Prefix
     tls:
-      - secretName: tpsplatform-tls
-        hosts:
-          - service.tpsonline.com
+    - secretName: tpsplatform-tls
+      hosts:
+      - service.tpsonline.com
 
   route:
     enabled: true
     hosts:
-      - host: service.tpsonline.com
+    - host: service.tpsonline.com
     tls:
       insecureEdgeTerminationPolicy: "Redirect"
       tlsTermination: "edge"
@@ -924,7 +942,8 @@ restServer:
     OTEL_EXPORTER_OTLP_PROTOCOL: grpc
     OTEL_LOGS_EXPORTER: otlp
     OTEL_METRICS_EXPORTER: otlp
-    OTEL_RESOURCE_ATTRIBUTES: service.name=platform-comms-rest-server,deployment.environment=production
+    OTEL_RESOURCE_ATTRIBUTES: 
+      service.name=platform-comms-rest-server,deployment.environment=production
     OTEL_SERVICE_NAME: platform-comms-rest-server
     OTEL_TRACES_EXPORTER: otlp
     REDIS_FIELD1: data
@@ -967,9 +986,9 @@ p2pSendingWorker:
   service:
     type: ClusterIP
     ports:
-      - name: http
-        port: 8080
-        targetPort: 8080
+    - name: http
+      port: 8080
+      targetPort: 8080
 
   dapr:
     enabled: true
@@ -1010,7 +1029,8 @@ p2pSendingWorker:
   config:
     APP_LOG_LEVEL: INFO
     CONFIGURATION_SERVICE_APP_ID: platform-service-configuration
-    CONFIGURATION_SERVICE_BASE_URL: http://localhost:3500/v1.0/invoke/configuration/method/api/v1
+    CONFIGURATION_SERVICE_BASE_URL: 
+      http://localhost:3500/v1.0/invoke/configuration/method/api/v1
     CONFIGURATION_SERVICE_CONNECT_TIMEOUT: "10"
     CONFIGURATION_SERVICE_REQUEST_TIMEOUT: "30"
     DAPR_ERROR_TOPIC: error-events
@@ -1086,15 +1106,15 @@ configuration:
   service:
     type: ClusterIP
     ports:
-      - name: http
-        port: 8080
-        targetPort: 8080
-      - name: grpc
-        port: 8081
-        targetPort: 8081
-      - name: metrics
-        port: 9091
-        targetPort: 9091
+    - name: http
+      port: 8080
+      targetPort: 8080
+    - name: grpc
+      port: 8081
+      targetPort: 8081
+    - name: metrics
+      port: 9091
+      targetPort: 9091
 
   dapr:
     enabled: true
@@ -1163,24 +1183,24 @@ configuration:
     REDIS_HOST: *raastRedisHost
     SECRET_STORE_NAME: *daprSecretStore
     SWAGGER__SERVERURL: /configuration
-  
+
   ingress:
     enabled: false
     healthcheckPath: "/healthz"
     hosts:
-      - host: "configuration.tpsonline.com"
-        paths:
-          - path: /
-            pathType: Prefix
+    - host: "configuration.tpsonline.com"
+      paths:
+      - path: /
+        pathType: Prefix
     tls:
-      - secretName: tpsplatform-tls
-        hosts:
-          - "configuration.tpsonline.com"
+    - secretName: tpsplatform-tls
+      hosts:
+      - "configuration.tpsonline.com"
 
   route:
     enabled: true
     hosts:
-      - host: "configuration.tpsonline.com"
+    - host: "configuration.tpsonline.com"
     tls:
       insecureEdgeTerminationPolicy: "Redirect"
       tlsTermination: "edge"
@@ -1210,15 +1230,15 @@ routing:
   service:
     type: ClusterIP
     ports:
-      - name: http
-        port: 8080
-        targetPort: 8080
-      - name: grpc
-        port: 50052
-        targetPort: 50052
-      - name: metrics
-        port: 9093
-        targetPort: 9093
+    - name: http
+      port: 8080
+      targetPort: 8080
+    - name: grpc
+      port: 50052
+      targetPort: 50052
+    - name: metrics
+      port: 9093
+      targetPort: 9093
 
   dapr:
     enabled: true
@@ -1266,7 +1286,8 @@ routing:
     OTEL_EXPORTER_OTLP_ENDPOINT: *otelGrpcEndpoint
     OTEL_EXPORTER_OTLP_PROTOCOL: grpc
     OTEL_INSTRUMENTATION_COMMON_DEFAULT_ENABLED: "true"
-    OTEL_INSTRUMENTATION_COMMON_MDC_RESOURCE_ATTRIBUTES: service.name,deployment.environment
+    OTEL_INSTRUMENTATION_COMMON_MDC_RESOURCE_ATTRIBUTES: 
+      service.name,deployment.environment
     OTEL_INSTRUMENTATION_GRPC_ENABLED: "true"
     OTEL_INSTRUMENTATION_JDBC_ENABLED: "true"
     OTEL_INSTRUMENTATION_LOGBACK_MDC_ADD_BAGGAGE: "true"
@@ -1310,9 +1331,9 @@ auditTrail:
   service:
     type: ClusterIP
     ports:
-      - name: http
-        port: 5000
-        targetPort: 5000
+    - name: http
+      port: 5000
+      targetPort: 5000
 
   dapr:
     enabled: true
@@ -1381,7 +1402,8 @@ auditTrail:
     # POSTGRES_PASSWORD: *postgresPassword
     # POSTGRES_PORT: *postgresPort
     # POSTGRES_USER: *postgresUser
-    PUBSUB_COMPONENT_NAME: *daprPubsubName  #previously redis-pubsub
+    PUBSUB_COMPONENT_NAME: *daprPubsubName
+                                            #previously redis-pubsub
   # REDIS_HOST: redis-master.platformx-infra.svc.cluster.local:6379  # rendered via template helper
     REDIS_PASSWORD: *redisPassword
     REDIS_PORT: *redisPort
@@ -1421,12 +1443,12 @@ raastServiceCas:
   service:
     type: ClusterIP
     ports:
-      - name: http
-        port: 9095
-        targetPort: 9095
-      - name: management
-        port: 9096
-        targetPort: 9096
+    - name: http
+      port: 9095
+      targetPort: 9095
+    - name: management
+      port: 9096
+      targetPort: 9096
 
   dapr:
     enabled: true
@@ -1461,10 +1483,12 @@ raastServiceCas:
     CAS_CLIENT_TOKEN: *casClientToken
     CAS_TOKEN_ENABLE: "true"
     CAS_TOKEN_EXPIRY_BUFFER_SECONDS: "0"
-    CAS_TOKEN_GRPC_HOST: "{{ include \"sparrowx.raastServiceToken.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local"
+    CAS_TOKEN_GRPC_HOST: "{{ include \"sparrowx.raastServiceToken.name\" . }}.{{ .Release.Namespace
+      }}.svc.cluster.local"
     CAS_TOKEN_GRPC_PORT: "9097"
-    CAS_TOPIC_NAME: cas-events 
-    CHANNEL_URL: http://127.0.0.1:3500/v1.0/invoke/channelservice/method/api/v1/channels?is_active=true&protocol=HTTP&io_mode=CLIENT&type=CAS&code=CAS
+    CAS_TOPIC_NAME: cas-events
+    CHANNEL_URL: 
+      http://127.0.0.1:3500/v1.0/invoke/channelservice/method/api/v1/channels?is_active=true&protocol=HTTP&io_mode=CLIENT&type=CAS&code=CAS
     DAPR_CONFIG_STORE_ENABLED: "false"
     DAPR_GRPC_ENDPOINT: localhost:50001
     DAPR_GRPC_PORT: "50001"
@@ -1488,7 +1512,8 @@ raastServiceCas:
     OTEL_INSTRUMENTATION_LOGBACK_APPENDER_ENABLED: "true"
     OTEL_LOGS_EXPORTER: otlp
     OTEL_METRICS_EXPORTER: otlp
-    OTEL_RESOURCE_ATTRIBUTES: service.name=raast-service-cas,deployment.environment=production
+    OTEL_RESOURCE_ATTRIBUTES: 
+      service.name=raast-service-cas,deployment.environment=production
     OTEL_SERVICE_NAME: raast-service-cas
     OTEL_TRACES_EXPORTER: otlp
     SERVER_BASE_PATH: /cas
@@ -1501,24 +1526,23 @@ raastServiceCas:
     VAULT_SECRET_DB_PATH: raast-service-cas/database
     VAULT_SECRET_REDIS_PATH: raast-service-cas/redis
     VAULT_SECRETSTORE_NAME: *daprSecretStore
-  
   ingress:
     enabled: false
     healthcheckPath: "/healthz"
     hosts:
-      - host: "cas.tpsonline.com"
-        paths:
-          - path: /
-            pathType: Prefix
+    - host: "cas.tpsonline.com"
+      paths:
+      - path: /
+        pathType: Prefix
     tls:
-      - secretName: tpsplatform-tls
-        hosts:
-          - "cas.tpsonline.com"
+    - secretName: tpsplatform-tls
+      hosts:
+      - "cas.tpsonline.com"
 
   route:
     enabled: true
     hosts:
-      - host: "cas.tpsonline.com"
+    - host: "cas.tpsonline.com"
     tls:
       insecureEdgeTerminationPolicy: "Redirect"
       tlsTermination: "edge"
@@ -1549,15 +1573,15 @@ raastServiceToken:
   service:
     type: ClusterIP
     ports:
-      - name: http
-        port: 9096
-        targetPort: 9096
-      - name: metrics
-        port: 9093
-        targetPort: 9093
-      - name: grpc
-        port: 9097
-        targetPort: 9097
+    - name: http
+      port: 9096
+      targetPort: 9096
+    - name: metrics
+      port: 9093
+      targetPort: 9093
+    - name: grpc
+      port: 9097
+      targetPort: 9097
 
   dapr:
     enabled: true
@@ -1645,9 +1669,9 @@ raastServiceLdap:
   service:
     type: ClusterIP
     ports:
-      - name: http
-        port: 8080
-        targetPort: 8080
+    - name: http
+      port: 8080
+      targetPort: 8080
   dapr:
     enabled: true
     appId: "raast-service-ldap"
@@ -1682,8 +1706,10 @@ raastServiceLdap:
   # Synced from: raast-service-ldap-config ConfigMap
   config:
     CERTS_PATH: /run/secrets/certificate
-    CHANNEL_SERVICE_URL: http://localhost:3500/v1.0/invoke/platform-service-channel/method/api/v1/channels?code=LDAP
-    CONFIGURATION_SERVICE_HOST: "{{ include \"sparrowx.configuration.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local:8081"
+    CHANNEL_SERVICE_URL: 
+      http://localhost:3500/v1.0/invoke/platform-service-channel/method/api/v1/channels?code=LDAP
+    CONFIGURATION_SERVICE_HOST: "{{ include \"sparrowx.configuration.name\" . }}.{{
+      .Release.Namespace }}.svc.cluster.local:8081"
     LDAP_DAPR_GRPC_PORT: "50001"
     LDAP_DAPR_HOST: localhost
     LDAP_DAPR_HTTP_PORT: "3500"
@@ -1702,24 +1728,23 @@ raastServiceLdap:
     VAULT_SECRETS_ENGINE: secret
     VAULT_TOKEN: *vaultToken
     VAULT_URL: *vaultAddress
-  
   ingress:
     enabled: false
     healthcheckPath: "/healthz"
     hosts:
-      - host: "raast-service-ldap.tpsonline.com"
-        paths:
-          - path: /
-            pathType: Prefix
+    - host: "raast-service-ldap.tpsonline.com"
+      paths:
+      - path: /
+        pathType: Prefix
     tls:
-      - secretName: tpsplatform-tls
-        hosts:
-          - "raast-service-ldap.tpsonline.com"
+    - secretName: tpsplatform-tls
+      hosts:
+      - "raast-service-ldap.tpsonline.com"
 
   route:
     enabled: true
     hosts:
-      - host: "raast-service-ldap.tpsonline.com"
+    - host: "raast-service-ldap.tpsonline.com"
     tls:
       insecureEdgeTerminationPolicy: "Redirect"
       tlsTermination: "edge"
@@ -1749,12 +1774,12 @@ raastCommsApg:
   service:
     type: ClusterIP
     ports:
-      - name: http
-        port: 8080
-        targetPort: 8080
-      - name: metrics
-        port: 9090
-        targetPort: 9090
+    - name: http
+      port: 8080
+      targetPort: 8080
+    - name: metrics
+      port: 9090
+      targetPort: 9090
 
   dapr:
     enabled: true
@@ -1788,19 +1813,19 @@ raastCommsApg:
     enabled: false
     healthcheckPath: "/healthz"
     hosts:
-      - host: "raast-comms-apg.tpsonline.com"
-        paths:
-          - path: /
-            pathType: Prefix
+    - host: "raast-comms-apg.tpsonline.com"
+      paths:
+      - path: /
+        pathType: Prefix
     tls:
-      - secretName: tpsplatform-tls
-        hosts:
-          - "raast-comms-apg.tpsonline.com"
+    - secretName: tpsplatform-tls
+      hosts:
+      - "raast-comms-apg.tpsonline.com"
 
   route:
     enabled: false
     hosts:
-      - host: "raast-comms-apg.tpsonline.com"
+    - host: "raast-comms-apg.tpsonline.com"
     tls:
       insecureEdgeTerminationPolicy: "Redirect"
       tlsTermination: "edge"
@@ -1810,7 +1835,8 @@ raastCommsApg:
     # APP_PORT: "8080"
     APP_VERSION: latest
     BYPASS_DOWNSTREAM_REQUESTS: "false"
-    CHANNEL_URL: http://localhost:3500/v1.0/invoke/channelservice/method/api/v1/channels?is_active=true&protocol=HTTP&io_mode=CLIENT&code=APG
+    CHANNEL_URL: 
+      http://localhost:3500/v1.0/invoke/channelservice/method/api/v1/channels?is_active=true&protocol=HTTP&io_mode=CLIENT&code=APG
     GRAFANA_PORT: "3000"
     LDAP_URL: ldap://ldap-server:389
     LOG_LEVEL: DEBUG
@@ -1829,7 +1855,8 @@ raastCommsApg:
     OTEL_LOGS_EXPORTER: otlp
     OTEL_METRICS_EXPORTER: otlp
     OTEL_METRICS_PORT: '8888        # Collector internal metrics'
-    OTEL_RESOURCE_ATTRIBUTES: service.name=raast-comms-apg,service.version=0.0.1-SNAPSHOT
+    OTEL_RESOURCE_ATTRIBUTES: 
+      service.name=raast-comms-apg,service.version=0.0.1-SNAPSHOT
     OTEL_SERVICE_NAME: raast-comms-apg
     OTEL_TRACES_EXPORTER: otlp
     OTEL_TRACES_SAMPLER: always_on
@@ -1872,12 +1899,12 @@ raastCommsIps:
   service:
     type: ClusterIP
     ports:
-      - name: grpc
-        port: 50051
-        targetPort: 50051
-      - name: http
-        port: 3500
-        targetPort: 3500
+    - name: grpc
+      port: 50051
+      targetPort: 50051
+    - name: http
+      port: 3500
+      targetPort: 3500
 
   dapr:
     enabled: true
@@ -2017,12 +2044,12 @@ raastCommsBps:
   service:
     type: ClusterIP
     ports:
-      - name: grpc
-        port: 50051
-        targetPort: 50051
-      - name: http
-        port: 3500
-        targetPort: 3500
+    - name: grpc
+      port: 50051
+      targetPort: 50051
+    - name: http
+      port: 3500
+      targetPort: 3500
 
   dapr:
     enabled: true
@@ -2123,8 +2150,8 @@ raastCommsBps:
     TOKEN_BROKER_GRPC_PORT: "50005"
     TRACING_ENABLED: "true"
     TRACING_SAMPLING_RATE: "0.1"
-    
-    
+
+
 
 # ==============================================================================
 # RAAST PORTAL OTC
@@ -2149,13 +2176,12 @@ raastPortalOtc:
   # service:
   #   type: ClusterIP
   #   port: 3000
-  
   service:
     type: ClusterIP
     ports:
-      - name: http
-        port: 3000
-        targetPort: 3000
+    - name: http
+      port: 3000
+      targetPort: 3000
 
   dapr:
     enabled: false
@@ -2190,7 +2216,8 @@ raastPortalOtc:
     CAS_RECEIVER_PARTICIPANT_CODE: ""
     CAS_SENDER_PARTICIPANT_CODE: TPSPKKA
     CAS_SENDER_USER_CODE: TPSUSER01
-    CAS_SERVICE_URL: "http://{{ include \"sparrowx.raastServiceCas.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local:9095"
+    CAS_SERVICE_URL: "http://{{ include \"sparrowx.raastServiceCas.name\" . }}.{{
+      .Release.Namespace }}.svc.cluster.local:9095"
     KEYCLOAK_CLIENT_ID: otc
     KEYCLOAK_CLIENT_SECRET: i7cmPaQWZHXJIrKJckGu0lomCkseRW9W
     METABASE_API_KEY: *metabaseApiKey
@@ -2204,9 +2231,11 @@ raastPortalOtc:
     NEXT_PUBLIC_KEYCLOAK_CLIENT_ID: otc
     NEXT_PUBLIC_KEYCLOAK_REALM: *keycloakRealm
     NEXT_PUBLIC_KEYCLOAK_URL: *keycloakUrl
-    NEXTAUTH_SECRET: aW5kZWVkamV0cHJlc2lkZW50cHJpbWl0aXZlbW9zdGx5dG9vbHNhZGRsZWFyZWFyZXM=
+    NEXTAUTH_SECRET: 
+      aW5kZWVkamV0cHJlc2lkZW50cHJpbWl0aXZlbW9zdGx5dG9vbHNhZGRsZWFyZWFyZXM=
     NEXTAUTH_URL: https://raast-portal-otc.tpsonline.com
-    PLATFORM_COMMS_URL: "http://{{ include \"sparrowx.raastServiceCas.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local:9095"
+    PLATFORM_COMMS_URL: "http://{{ include \"sparrowx.raastServiceCas.name\" . }}.{{
+      .Release.Namespace }}.svc.cluster.local:9095"
     PORT: "3000"
 
 # ==============================================================================
@@ -2248,22 +2277,22 @@ raastSimulatorBackend:
   service:
     type: ClusterIP
     ports:
-      - name: ips
-        port: 7001
-        targetPort: 7001
-      - name: ui
-        port: 7002
-        targetPort: 7002
-      - name: cas
-        port: 7006
-        targetPort: 7006
-      - name: host
-        port: 7007
-        targetPort: 7007
-      - name: bps
-        port: 7004
-        protocol: TCP
-        targetPort: 7004
+    - name: ips
+      port: 7001
+      targetPort: 7001
+    - name: ui
+      port: 7002
+      targetPort: 7002
+    - name: cas
+      port: 7006
+      targetPort: 7006
+    - name: host
+      port: 7007
+      targetPort: 7007
+    - name: bps
+      port: 7004
+      protocol: TCP
+      targetPort: 7004
 
   resources:
     requests:
@@ -2326,9 +2355,9 @@ raastSimulatorFrontend:
   service:
     type: ClusterIP
     ports:
-      - name: http
-        port: 3000
-        targetPort: 3000
+    - name: http
+      port: 3000
+      targetPort: 3000
 
   resources:
     requests:
@@ -2383,13 +2412,12 @@ raastBatchWorkflowPacs:
   # service:
   #   type: ClusterIP
   #   port: 8383
-  
   service:
     type: ClusterIP
     ports:
-      - name: http
-        port: 8383
-        targetPort: 8383
+    - name: http
+      port: 8383
+      targetPort: 8383
 
   dapr:
     enabled: true
@@ -2418,7 +2446,8 @@ raastBatchWorkflowPacs:
   # Synced from: raast-batch-workflows-pacs-config ConfigMap
   config:
     APP_LOG_LEVEL: DEBUG
-    AUTH_API_URL: "http://{{ include \"sparrowx.userManagement.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local:5000/api"
+    AUTH_API_URL: "http://{{ include \"sparrowx.userManagement.name\" . }}.{{ .Release.Namespace
+      }}.svc.cluster.local:5000/api"
     BATCH_SERVICE_APP_ID: *platformBatchAppId
     BATCH_SERVICE_BASE_URL: *batchServiceDaprUrl
     BATCH_SERVICE_CONNECT_TIMEOUT: "10"
@@ -2437,9 +2466,11 @@ raastBatchWorkflowPacs:
     HOST_SERVICE_APP_ID: *hostSindhBankAppId
     HOST_SERVICE_BASE_URL: *hostSindhBankDaprUrl
     HOST_SERVICE_CONNECT_TIMEOUT: "10"
-    HOST_SERVICE_GRPC_HOST: "{{ include \"sparrowx.raastSimulatorBackend.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local:7007"
+    HOST_SERVICE_GRPC_HOST: "{{ include \"sparrowx.raastSimulatorBackend.name\" .
+      }}.{{ .Release.Namespace }}.svc.cluster.local:7007"
     HOST_SERVICE_REQUEST_TIMEOUT: "30"
-    HOST_SIMULATOR_URL: "http://{{ include \"sparrowx.raastSimulatorBackend.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local:7007"
+    HOST_SIMULATOR_URL: "http://{{ include \"sparrowx.raastSimulatorBackend.name\"\
+      \ . }}.{{ .Release.Namespace }}.svc.cluster.local:7007"
     INSTITUTION: PLATFORM
     KEYCLOAK_INTERNAL: *keycloakInternalUrl
     KEYCLOAK_URL: *keycloakUrl
@@ -2453,7 +2484,8 @@ raastBatchWorkflowPacs:
     MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: *managementEndpoints
     MESSAGE_STORE_GRPC_HOST: *msgStoreGrpc
     MESSAGE_TRANSFORMATION_SERVICE_APP_ID: *msgTransformAppId
-    MESSAGE_TRANSFORMATION_SERVICE_BASE_URL: "http://{{ include \"sparrowx.messageTransformation.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local:9191/api/v1"
+    MESSAGE_TRANSFORMATION_SERVICE_BASE_URL: "http://{{ include \"sparrowx.messageTransformation.name\"\
+      \ . }}.{{ .Release.Namespace }}.svc.cluster.local:9191/api/v1"
     MESSAGE_TRANSFORMATION_SERVICE_CONNECT_TIMEOUT: "10"
     MESSAGE_TRANSFORMATION_SERVICE_REQUEST_TIMEOUT: "30"
     MESSAGESTORE_DAPR_HOST: *msgStoreHost
@@ -2495,7 +2527,8 @@ raastBatchWorkflowPacs:
     PROJECT_NAME: *raastBatchProjectName
     PROMETHEUS_PORT: "9092"
     REDIS_HOST: *redisHost
-    ROUTING_API_URL: "https://{{ include \"sparrowx.routing.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local:8080"
+    ROUTING_API_URL: "https://{{ include \"sparrowx.routing.name\" . }}.{{ .Release.Namespace
+      }}.svc.cluster.local:8080"
     S3_LOCAL_STACK: "http://minio.{{ .Release.Namespace }}.svc.cluster.local:9000"
     SERVICE_VERSION: 0.0.1-SNAPSHOT
     TEMPO_GRPC_PORT: "9095"
@@ -2508,7 +2541,8 @@ raastBatchWorkflowPacs:
     TEMPORAL_TASK_QUEUE: pacs008-receiving-queue
     TEMPORAL_UI_PORT: "8080"
     TRANSFORMATION_SERVICE_GRPC_HOST: *msgTransformGrpc
-    VITE_API_URL: "http://{{ include \"sparrowx.raastSimulatorBackend.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local:7002"
+    VITE_API_URL: "http://{{ include \"sparrowx.raastSimulatorBackend.name\" . }}.{{
+      .Release.Namespace }}.svc.cluster.local:7002"
     ZIPKIN_ENDPOINT: *zipkinEndpoint
 
 # ==============================================================================
@@ -2538,13 +2572,12 @@ raastBatchWorkflowPrevalidation:
     runAsUser: 0
     capabilities:
       drop: []
-  
   service:
     type: ClusterIP
     ports:
-      - name: http
-        port: 8282
-        targetPort: 8282
+    - name: http
+      port: 8282
+      targetPort: 8282
 
   dapr:
     enabled: true
@@ -2576,7 +2609,8 @@ raastBatchWorkflowPrevalidation:
     AD_KEYCLOAK_CLIENT_SECRET: uA4NfvSqngvqbAF0FnPPFbuUEx2Z0ZBO
     AD_KEYCLOAK_ISSUER: *cpmKeycloakIssuer
     APG_SERVICE_APP_ID: raast-comms-apg
-    APG_SERVICE_BASE_URL: http://localhost:3500/v1.0/invoke/raast-comms-apg/method/api/v1
+    APG_SERVICE_BASE_URL: 
+      http://localhost:3500/v1.0/invoke/raast-comms-apg/method/api/v1
     APG_SERVICE_CONNECT_TIMEOUT: "5000"
     APG_SERVICE_REQUEST_TIMEOUT: "30000"
     APP_LOG_LEVEL: DEBUG
@@ -2612,7 +2646,8 @@ raastBatchWorkflowPrevalidation:
     MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: *managementEndpoints
     MESSAGE_STORE_GRPC_HOST: *msgStoreGrpc
     MESSAGE_TRANSFORMATION_SERVICE_APP_ID: *msgTransformAppId
-    MESSAGE_TRANSFORMATION_SERVICE_BASE_URL: "https://{{ include \"sparrowx.messageTransformation.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local:50053"
+    MESSAGE_TRANSFORMATION_SERVICE_BASE_URL: "https://{{ include \"sparrowx.messageTransformation.name\"\
+      \ . }}.{{ .Release.Namespace }}.svc.cluster.local:50053"
     MESSAGE_TRANSFORMATION_SERVICE_CONNECT_TIMEOUT: "10"
     MESSAGE_TRANSFORMATION_SERVICE_REQUEST_TIMEOUT: "30"
     MESSAGESTORE_GRPC_HOST: *msgStoreGrpc
@@ -2648,7 +2683,8 @@ raastBatchWorkflowPrevalidation:
     PREVALIDATION_RECEIVING_TASK_QUEUE: prevalidation-receiving-queue
     PROJECT_NAME: *raastBatchProjectName
     PROMETHEUS_PORT: "9092"
-    REDIS_CACHE_SERVICE_HOST: "{{ include \"sparrowx.redisRaast.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local"
+    REDIS_CACHE_SERVICE_HOST: "{{ include \"sparrowx.redisRaast.name\" . }}.{{ .Release.Namespace
+      }}.svc.cluster.local"
     REDIS_CACHE_SERVICE_PORT: "6379"
     REDIS_HOST: *raastRedisHost
     REDIS_PORT: "6379"
@@ -2697,12 +2733,12 @@ platformBatch:
   service:
     type: ClusterIP
     ports:
-      - name: http
-        port: 8080
-        targetPort: 8080
-      - name: metrics
-        port: 9090
-        targetPort: 9090
+    - name: http
+      port: 8080
+      targetPort: 8080
+    - name: metrics
+      port: 9090
+      targetPort: 9090
 
   dapr:
     enabled: true
@@ -2775,10 +2811,10 @@ platformBatch:
     IDMP_TTL_SECONDS: "86400"
     LOG_LEVEL_APP: DEBUG
     LOGGING_LEVEL_GLOBAL: DEBUG
-   
-    OTEL_RESOURCE_ATTRIBUTES: service.name=platform-service-batch,service.version=0.0.1-SNAPSHOT
+
+    OTEL_RESOURCE_ATTRIBUTES: 
+      service.name=platform-service-batch,service.version=0.0.1-SNAPSHOT
     OTEL_SERVICE_NAME: *platformBatchAppId
-  
     REST_CLIENT_CONNECT_TIMEOUT: "5000"
     REST_CLIENT_READ_TIMEOUT: "10000"
     SERVER_BASE_PATH: ""
@@ -2811,12 +2847,12 @@ notificationGateway:
   service:
     type: ClusterIP
     ports:
-      - name: http
-        port: 8080
-        targetPort: 8080
-      - name: metrics
-        port: 9094
-        targetPort: 9094
+    - name: http
+      port: 8080
+      targetPort: 8080
+    - name: metrics
+      port: 9094
+      targetPort: 9094
 
   dapr:
     enabled: true
@@ -2855,19 +2891,19 @@ notificationGateway:
     enabled: false
     healthcheckPath: "/healthz"
     hosts:
-      - host: "notificationgateway.tpsonline.com"
-        paths:
-          - path: /
-            pathType: Prefix
+    - host: "notificationgateway.tpsonline.com"
+      paths:
+      - path: /
+        pathType: Prefix
     tls:
-      - secretName: notification-gateway-tls
-        hosts:
-          - "notificationgateway.tpsonline.com"
+    - secretName: notification-gateway-tls
+      hosts:
+      - "notificationgateway.tpsonline.com"
 
   route:
     enabled: true
     hosts:
-      - host: "notificationgateway.tpsonline.com"
+    - host: "notificationgateway.tpsonline.com"
     tls:
       insecureEdgeTerminationPolicy: "Redirect"
       tlsTermination: "edge"
@@ -2882,18 +2918,21 @@ notificationGateway:
     DAPR_HTTP_PORT: "3550"
     NAME: Test
     NOTIFICATION_GATEWAY_ASPNETCORE_ENVIRONMENT: Development
-    NOTIFICATION_GATEWAY_DATABASE_SCHEMA_NAME: notificationgateway/database-schema-name
+    NOTIFICATION_GATEWAY_DATABASE_SCHEMA_NAME: 
+      notificationgateway/database-schema-name
     NOTIFICATION_GATEWAY_DATABASE_SCHEMA_NAME_value: notificationgateway
     NOTIFICATION_GATEWAY_DEAD_LETTER_QUEUE_TOPIC: sparrowx-dead-letter-queue
     NOTIFICATION_GATEWAY_IN_MEMORY_CACHE_TTL_SECONDS: "3600"
     NOTIFICATION_GATEWAY_MAX_RETRY_COUNT: "3"
     NOTIFICATION_GATEWAY_NOVU_API_BASE_URL: notificationgateway/novu-base-url
     NOTIFICATION_GATEWAY_NOVU_API_BASE_URL_value: *novuApiUrl
-    NOTIFICATION_GATEWAY_NOVU_SECRET_KEY_NAME: notificationgateway/novu-secretkey
+    NOTIFICATION_GATEWAY_NOVU_SECRET_KEY_NAME: 
+      notificationgateway/novu-secretkey
     NOTIFICATION_GATEWAY_NOVU_SECRET_KEY_NAME_value: *novuApiKey
     NOTIFICATION_GATEWAY_OBSERVABILITY_ENABLE_METRICS: "true"
     NOTIFICATION_GATEWAY_OBSERVABILITY_ENABLE_TRACING: "true"
-    NOTIFICATION_GATEWAY_POSTGRESQL_CONNECTION_STRING_NAME: notificationgateway/postgresql-connectionstring
+    NOTIFICATION_GATEWAY_POSTGRESQL_CONNECTION_STRING_NAME: 
+      notificationgateway/postgresql-connectionstring
   # NOTIFICATION_GATEWAY_POSTGRESQL_CONNECTION_STRING_NAME_value: Host=postgresql.platformx-infra.svc.cluster.local;Port=5432;Username=postgres;Password=postgres;Database=platformdb  # rendered via template helper
     NOTIFICATION_GATEWAY_PUBSUB_NAME: *daprPubsubName
     NOTIFICATION_GATEWAY_RETRY_STATE_KEY_PREFIX: notification-retry-
@@ -2909,14 +2948,17 @@ notificationGateway:
     Observability__OtlpEndpoint: *otelGrpcEndpoint
     Secrets__NovuBaseUrlName: notificationgateway/novu-base-url
     Secrets__NovuSecretKeyName: notificationgateway/novu-secretkey
-    Secrets__PostgresqlConnectionStringName: notificationgateway/postgresql-connectionstring
+    Secrets__PostgresqlConnectionStringName: 
+      notificationgateway/postgresql-connectionstring
     TopicSubscriptions__NotificationTypeFilter: ""
     TopicSubscriptions__Topics__0: notification-transactions
 
   secrets:
-    novuBaseUrl: aHR0cDovL25vdnUtYXBpLnBsYXRmb3JteC1pbmZyYS5zdmMuY2x1c3Rlci5sb2NhbDozMDAx
+    novuBaseUrl: 
+      aHR0cDovL25vdnUtYXBpLnBsYXRmb3JteC1pbmZyYS5zdmMuY2x1c3Rlci5sb2NhbDozMDAx
     novuSecretKey: MnRhMTY5MjZkNDkxN2Q5OTc3MTE4ZWMxZTI0MzM1Y2IK
-    postgresqlConnectionString: SG9zdD1wb3N0Z3JlcztQb3J0PTU0MzI7RGF0YWJhc2U9bm90aWZpY2F0aW9uZ2F0ZXdheWRiO1VzZXJuYW1lPXVzZXJuYW1lO1Bhc3N3b3JkPXBhc3N3b3Jk
+    postgresqlConnectionString: 
+      SG9zdD1wb3N0Z3JlcztQb3J0PTU0MzI7RGF0YWJhc2U9bm90aWZpY2F0aW9uZ2F0ZXdheWRiO1VzZXJuYW1lPXVzZXJuYW1lO1Bhc3N3b3JkPXBhc3N3b3Jk
 
 # ==============================================================================
 # PLATFORM DOCUMENTATION
@@ -2946,13 +2988,12 @@ platformDocs:
     runAsUser: 0
     capabilities:
       drop: []
-  
   service:
     type: ClusterIP
     ports:
-      - name: http
-        port: 8080
-        targetPort: 8080
+    - name: http
+      port: 8080
+      targetPort: 8080
 
   dapr:
     enabled: true
@@ -2988,19 +3029,19 @@ platformDocs:
     enabled: true
     healthcheckPath: "/"
     hosts:
-      - host: "platformx-docs.tpsonline.com"
-        paths:
-          - path: /
-            pathType: Prefix
+    - host: "platformx-docs.tpsonline.com"
+      paths:
+      - path: /
+        pathType: Prefix
     tls:
-      - secretName: tpsplatform-tls
-        hosts:
-          - "platformx-docs.tpsonline.com"
+    - secretName: tpsplatform-tls
+      hosts:
+      - "platformx-docs.tpsonline.com"
 
   route:
     enabled: false
     hosts:
-      - host: "platformx-docs.tpsonline.com"
+    - host: "platformx-docs.tpsonline.com"
     tls:
       insecureEdgeTerminationPolicy: "Redirect"
       tlsTermination: "edge"
@@ -3035,12 +3076,12 @@ casTitlefetchReceiving:
   service:
     type: ClusterIP
     ports:
-      - name: http
-        port: 8080
-        targetPort: 8080
-      - name: metrics
-        port: 9889
-        targetPort: 9889
+    - name: http
+      port: 8080
+      targetPort: 8080
+    - name: metrics
+      port: 9889
+      targetPort: 9889
 
   dapr:
     enabled: true
@@ -3087,7 +3128,6 @@ userManagement:
     automountServiceAccountToken: true
     annotations: {}
     labels: {}
-  
   postgres:
     name: postgres
     namespace: platformx-infra
@@ -3104,9 +3144,9 @@ userManagement:
   service:
     type: ClusterIP
     ports:
-      - name: http
-        port: 5000
-        targetPort: 5000
+    - name: http
+      port: 5000
+      targetPort: 5000
 
   nodeSelector: {}
 
@@ -3139,8 +3179,10 @@ userManagement:
     SERVICE_NAME: user-management
     SERVICE_NAMESPACE: usermanagement
     Serilog__MinimumLevel__Default: Information
-    Serilog__MinimumLevel__Override__Microsoft.AspNetCore.Authentication: Information
-    Serilog__MinimumLevel__Override__Microsoft.AspNetCore.Authorization: Information
+    Serilog__MinimumLevel__Override__Microsoft.AspNetCore.Authentication: 
+      Information
+    Serilog__MinimumLevel__Override__Microsoft.AspNetCore.Authorization: 
+      Information
     Serilog__MinimumLevel__Override__UserManagement.API: Information
     Serilog__MinimumLevel__Override__UserManagement.API.Helpers: Information
     Serilog__MinimumLevel__Override__UserManagement.API.Middlewares: Information
@@ -3154,8 +3196,10 @@ userManagement:
     USER_MANAGEMENT_DATABASE_SCHEMA_NAME_FALLBACK: usermanagement
     USER_MANAGEMENT_IN_MEMORY_CACHE_TTL_SECONDS: "3600"
     USER_MANAGEMENT_NOTIFICATION_GATEWAY_API_URL: *notifGatewayInternalUrl
-    USER_MANAGEMENT_POSTGRESQL_CONNECTION_STRING_NAME: usermanagement/postgresql-connectionstring
-    USER_MANAGEMENT_POSTGRESQL_CONNECTION_STRING_NAME_FALLBACK: '{{ include "sparrowx.infra.postgresConnString" . }};SearchPath=usermanagement'
+    USER_MANAGEMENT_POSTGRESQL_CONNECTION_STRING_NAME: 
+      usermanagement/postgresql-connectionstring
+    USER_MANAGEMENT_POSTGRESQL_CONNECTION_STRING_NAME_FALLBACK: '{{ include "sparrowx.infra.postgresConnString"
+      . }};SearchPath=usermanagement'
     USER_MANAGEMENT_SECRET_STORE_NAME: *daprSecretStore
     USER_MANAGEMENT_SECRET_STORE_TIMEOUT: "3"
     USER_MANAGEMENT_STATE_STORE_NAME: *daprStateStore
@@ -3167,19 +3211,19 @@ userManagement:
     enabled: false
     healthcheckPath: "/health"
     hosts:
-      - host: usermanagement.tpsonline.com
-        paths:
-          - path: /
-            pathType: Prefix
+    - host: usermanagement.tpsonline.com
+      paths:
+      - path: /
+        pathType: Prefix
     tls:
-      - secretName: tpsplatform-tls
-        hosts:
-          - usermanagement.tpsonline.com
+    - secretName: tpsplatform-tls
+      hosts:
+      - usermanagement.tpsonline.com
 
   route:
     enabled: true
     hosts:
-      - host: usermanagement.tpsonline.com
+    - host: usermanagement.tpsonline.com
     tls:
       insecureEdgeTerminationPolicy: "Redirect"
       tlsTermination: "edge"
@@ -3199,9 +3243,9 @@ hostServiceSindhBank:
   service:
     type: ClusterIP
     ports:
-      - name: port-8080
-        port: 8080
-        targetPort: 8080
+    - name: port-8080
+      port: 8080
+      targetPort: 8080
   dapr:
     enabled: true
     appId: *hostSindhBankAppId
@@ -3244,7 +3288,8 @@ hostServiceSindhBank:
     DAPR_DB_SECRET_KEY: postgresql-connectionstring
     DAPR_DLQ_TOPIC: host-service-dlq
     DAPR_GRPC_PORT: "50001"
-    DAPR_HTTP_ENDPOINT: "http://{{ include \"sparrowx.messageStore.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local"
+    DAPR_HTTP_ENDPOINT: "http://{{ include \"sparrowx.messageStore.name\" . }}.{{
+      .Release.Namespace }}.svc.cluster.local"
     DAPR_HTTP_PORT: "3500"
     DAPR_PUBSUB_NAME: *daprPubsubName
     DAPR_SECRET_DB_PATH: host-service
@@ -3274,9 +3319,9 @@ sindhBankHostSimulator:
   service:
     type: ClusterIP
     ports:
-      - name: port-9999
-        port: 9999
-        targetPort: 9999
+    - name: port-9999
+      port: 9999
+      targetPort: 9999
   dapr:
     enabled: true
     appId: "sindh-bank-host-simulator"
@@ -3321,12 +3366,12 @@ raastCommsInrt:
   service:
     type: ClusterIP
     ports:
-      - name: grpc
-        port: 50051
-        targetPort: 50051
-      - name: http
-        port: 3500
-        targetPort: 3500
+    - name: grpc
+      port: 50051
+      targetPort: 50051
+    - name: http
+      port: 3500
+      targetPort: 3500
 
   dapr:
     enabled: true
@@ -3395,7 +3440,8 @@ raastCommsInrt:
     OTEL_INSTRUMENTATION_APACHE_CAMEL_ENABLED: "true"
     OTEL_INSTRUMENTATION_GRPC_ENABLED: "true"
     OTEL_INSTRUMENTATION_LOGBACK_APPENDER_ENABLED: "true"
-    OTEL_INSTRUMENTATION_LOGBACK_APPENDER_EXPERIMENTAL_CAPTURE_MDC_ATTRIBUTES: correlation_id
+    OTEL_INSTRUMENTATION_LOGBACK_APPENDER_EXPERIMENTAL_CAPTURE_MDC_ATTRIBUTES: 
+      correlation_id
     OTEL_INSTRUMENTATION_LOGBACK_APPENDER_EXPERIMENTAL_LOG_ATTRIBUTES: "true"
     OTEL_INSTRUMENTATION_LOGBACK_MDC_ADD_BAGGAGE: "true"
     OTEL_INSTRUMENTATION_LOGS_CORRELATION: "true"
@@ -3555,9 +3601,9 @@ p2pReceivingWorker:
   service:
     type: ClusterIP
     ports:
-      - name: http
-        port: 8080
-        targetPort: 8080
+    - name: http
+      port: 8080
+      targetPort: 8080
 
   dapr:
     enabled: true
@@ -3677,9 +3723,9 @@ lookupService:
   service:
     type: ClusterIP
     ports:
-      - name: http
-        port: 5000
-        targetPort: 5000
+    - name: http
+      port: 5000
+      targetPort: 5000
 
   dapr:
     enabled: true
@@ -3716,19 +3762,19 @@ lookupService:
     enabled: false
     healthcheckPath: "/health"
     hosts:
-      - host: "platform-service-lookup.tpsonline.com"
-        paths:
-          - path: /
-            pathType: Prefix
+    - host: "platform-service-lookup.tpsonline.com"
+      paths:
+      - path: /
+        pathType: Prefix
     tls:
-      - secretName: tpsplatform-tls
-        hosts:
-          - "platform-service-lookup.tpsonline.com"
+    - secretName: tpsplatform-tls
+      hosts:
+      - "platform-service-lookup.tpsonline.com"
 
   route:
     enabled: true
     hosts:
-      - host: "platform-service-lookup.tpsonline.com"
+    - host: "platform-service-lookup.tpsonline.com"
     tls:
       insecureEdgeTerminationPolicy: "Redirect"
       tlsTermination: "edge"
@@ -3781,9 +3827,9 @@ errorManagement:
   service:
     type: ClusterIP
     ports:
-      - name: http
-        port: 5000
-        targetPort: 5000
+    - name: http
+      port: 5000
+      targetPort: 5000
 
   dapr:
     enabled: true
@@ -3822,19 +3868,19 @@ errorManagement:
     enabled: false
     healthcheckPath: "/"
     hosts:
-      - host: "platform-service-error-management.tpsonline.com"
-        paths:
-          - path: /
-            pathType: Prefix
+    - host: "platform-service-error-management.tpsonline.com"
+      paths:
+      - path: /
+        pathType: Prefix
     tls:
-      - secretName: tpsplatform-tls
-        hosts:
-          - "platform-service-error-management.tpsonline.com"
+    - secretName: tpsplatform-tls
+      hosts:
+      - "platform-service-error-management.tpsonline.com"
 
   route:
     enabled: false
     hosts:
-      - host: "platform-service-error-management.tpsonline.com"
+    - host: "platform-service-error-management.tpsonline.com"
     tls:
       insecureEdgeTerminationPolicy: "Redirect"
       tlsTermination: "edge"
@@ -3843,7 +3889,8 @@ errorManagement:
   config:
     ASPNETCORE_ENVIRONMENT: Production
     ASPNETCORE_URLS: "http://+:5000"
-    AUDIT_EVENTS_SUBSCRIPTION: *auditEventsSub        # anchor: shared.auditEventsSub = "audit-trail-service"
+    AUDIT_EVENTS_SUBSCRIPTION: *auditEventsSub
+                                                      # anchor: shared.auditEventsSub = "audit-trail-service"
     AUDIT_EVENTS_TOPIC: "audit-events"
     DAPR_GRPC_PORT: "50001"
     DAPR_HTTP_PORT: "3500"
@@ -3851,18 +3898,24 @@ errorManagement:
     DAPR_STATE_STORE_NAME: statestore
     DATABASE_COMMAND_TIMEOUT: "30"
     DATABASE_CONNECTION_TIMEOUT: "30"
-    Dapr__SecretStoreName: *daprSecretStore           # anchor: shared.daprSecretStore = "vault-secretstore"
-    Dapr__StateStoreName: *daprStateStore             # anchor: shared.daprStateStore  = "redis-state"
+    Dapr__SecretStoreName: *daprSecretStore
+                                                      # anchor: shared.daprSecretStore = "vault-secretstore"
+    Dapr__StateStoreName: *daprStateStore
+                                                      # anchor: shared.daprStateStore  = "redis-state"
     Database__ConnectionStringSecretKey: postgres-connection-string
-    Database__SecretStoreName: *daprSecretStore       # anchor: shared.daprSecretStore = "vault-secretstore"
+    Database__SecretStoreName: *daprSecretStore
+                                                      # anchor: shared.daprSecretStore = "vault-secretstore"
     ERRORMANAGEMENT_EVENTS_SUBSCRIPTION: error-management-service
     ERRORMANAGEMENT_EVENTS_TOPIC: errormanagement-events
     GITHUB_TOKEN: ""
     GITHUB_USERNAME: ""
-    KEYCLOAK_BASE_URL: *keycloakInternalUrl           # anchor: shared.keycloakInternalUrl
-    OTEL_EXPORTER_OTLP_ENDPOINT: *otelGrpcEndpoint   # anchor: global.observability.otelCollectorGrpcEndpoint
+    KEYCLOAK_BASE_URL: *keycloakInternalUrl
+                                                      # anchor: shared.keycloakInternalUrl
+    OTEL_EXPORTER_OTLP_ENDPOINT: *otelGrpcEndpoint
+                                                     # anchor: global.observability.otelCollectorGrpcEndpoint
   # POSTGRES_CONNECTION_STRING rendered via template helper (sparrowx.infra.postgresConnString)
-    PUBSUB_COMPONENT_NAME: *daprPubsubName            # anchor: shared.daprPubsubName = "platformx-pubsub"
+    PUBSUB_COMPONENT_NAME: *daprPubsubName
+                                                      # anchor: shared.daprPubsubName = "platformx-pubsub"
     SERVICE_NAME: ErrorManagementService
 
 # ==============================================================================
@@ -3879,9 +3932,9 @@ postgresRaast:
   service:
     type: ClusterIP
     ports:
-      - name: postgres
-        port: 5432
-        targetPort: 5432
+    - name: postgres
+      port: 5432
+      targetPort: 5432
 
   config:
     user: "postgres"
@@ -3922,9 +3975,9 @@ redisRaast:
   service:
     type: ClusterIP
     ports:
-      - name: redis
-        port: 6379
-        targetPort: 6379
+    - name: redis
+      port: 6379
+      targetPort: 6379
   resources:
     requests:
       memory: "128Mi"
