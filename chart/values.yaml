@@ -14,11 +14,10 @@ global:
   infraNamespace: "platformx-infra"
   obsNamespace: "platformx-observability"
   imagePullSecrets:
-     - docker-registry-secret  # Existing pull secret names (used when secrets.dockerRegistry.enabled=false)
+    - docker-registry-secret # Existing pull secret names (used when secrets.dockerRegistry.enabled=false)
   dockerRegistry: devopstps
   image:
-    tag: ""  # REQUIRED: set to a pinned tag (e.g. "v1.2.3"). Using "latest" prevents rollbacks.
-
+    tag: "" # REQUIRED: set to a pinned tag (e.g. "v1.2.3"). Using "latest" prevents rollbacks.
   dapr:
     enabled: true
     logLevel: info
@@ -27,33 +26,24 @@ global:
     sidecarCpuLimit: "300m"
     sidecarMemoryRequest: "250Mi"
     sidecarCpuRequest: "100m"
-
   observability:
-    zipkinEndpoint: &zipkinEndpoint
-      http://zipkin.platformx-observability.svc.cluster.local:9411/api/v2/spans
-    otelCollectorGrpcEndpoint: &otelGrpcEndpoint
-      http://otel-collector-opentelemetry-collector.platformx-observability.svc.cluster.local:4317
-    otelCollectorEndpoint: &otelCollectorEndpoint
-      http://otel-collector-opentelemetry-collector.platformx-observability.svc.cluster.local:4318
-    grafanaEndPoint: &grafanaEndPoint
-      http://grafana.platformx-observability.svc.cluster.local:3000
+    zipkinEndpoint: &zipkinEndpoint http://zipkin.platformx-observability.svc.cluster.local:9411/api/v2/spans
+    otelCollectorGrpcEndpoint: &otelGrpcEndpoint http://otel-collector-opentelemetry-collector.platformx-observability.svc.cluster.local:4317
+    otelCollectorEndpoint: &otelCollectorEndpoint http://otel-collector-opentelemetry-collector.platformx-observability.svc.cluster.local:4318
+    grafanaEndPoint: &grafanaEndPoint http://grafana.platformx-observability.svc.cluster.local:3000
     grafanaUser: "admin"
     grafanaPassword: "admin"
     enableTracing: "true"
     enableMetrics: "true"
-
   infrastructure:
-
     redis:
       host: &redisHost "redis-master.platformx-infra.svc.cluster.local"
       port: &redisPort "6379"
       password: &redisPassword "redis"
-
     temporal:
       host: &temporalHost "temporal-frontend.platformx-infra.svc.cluster.local"
       port: &temporalPort "7233"
       namespace: &temporalNamespace "default"
-
     postgres:
       host: &postgresHost "postgresql.platformx-infra.svc.cluster.local"
       port: &postgresPort "5432"
@@ -61,13 +51,11 @@ global:
       password: &postgresPassword "postgres"
       database: &postgresDatabase "platformdb"
       schemaNames: &postgresSchemas "channel messagestore audit usermanagement configuration notificationgateway batch cas host lookup errormanagement"
-
     vault:
       host: &vaultHost "http://vault.platformx-infra.svc.cluster.local"
       port: &vaultPort 8200
       rootToken: &vaultToken "root-token"
       address: &vaultAddress "http://vault.platformx-infra.svc.cluster.local:8200"
-
   # Shared ALB ingress defaults – all ingress templates inherit these values.
   # Per-service ingress blocks need only set: enabled, healthcheckPath,
   # successCodes (when non-default), hosts, and tls.
@@ -85,112 +73,90 @@ global:
     healthcheckTimeoutSeconds: "5"
     healthyThresholdCount: "2"
     unhealthyThresholdCount: "2"
-
   # ===========================================================================
   # Shared scalar anchors
   # To update a shared value, change it here only.
   # ===========================================================================
   shared:
     # ── Dapr component names ─────────────────────────────────────────────────
-    daprPubsubName:  &daprPubsubName  "platformx-pubsub"
-    daprStateStore:  &daprStateStore  "redis-state"
+    daprPubsubName: &daprPubsubName "platformx-pubsub"
+    daprStateStore: &daprStateStore "redis-state"
     daprSecretStore: &daprSecretStore "vault-secretstore"
-
     # ── Keycloak ─────────────────────────────────────────────────────────────
-    keycloakUrl:    &keycloakUrl    "https://keycloakdev.platformxcloud.com"
-    keycloakRealm:  &keycloakRealm  "platformx"
+    keycloakUrl: &keycloakUrl "https://keycloakdev.platformxcloud.com"
+    keycloakRealm: &keycloakRealm "platformx"
     keycloakIssuer: &keycloakIssuer "https://keycloakdev.platformxcloud.com/realms/platformx"
-
     # ── Metabase ─────────────────────────────────────────────────────────────
     metabaseInternalUrl: &metabaseInternalUrl "http://metabase.platformx-infra.svc.cluster.local:3000"
-    metabasePublicUrl:   &metabasePublicUrl   "https://metabase.tpsonline.com"
-    metabaseApiKey:      &metabaseApiKey      "mb_5Xe85x0KFbCYnCtmPAO1dCKL4c9Cac6dgF84EovqxFg="
-    metabaseSecretKey:   &metabaseSecretKey   "1b3f707c86b7fe3e2dfcb079ef2dd49897f0a09c62d2da75a283230709625b81"
-
+    metabasePublicUrl: &metabasePublicUrl "https://metabase.tpsonline.com"
+    metabaseApiKey: &metabaseApiKey "mb_5Xe85x0KFbCYnCtmPAO1dCKL4c9Cac6dgF84EovqxFg="
+    metabaseSecretKey: &metabaseSecretKey "1b3f707c86b7fe3e2dfcb079ef2dd49897f0a09c62d2da75a283230709625b81"
     # ── Novu ─────────────────────────────────────────────────────────────────
     novuApiUrl: &novuApiUrl "http://novu-api.platformx-infra.svc.cluster.local:3001"
     novuApiKey: &novuApiKey "2da16926d4917d9977118ec1e24335cb"
-
     # ── Flagsmith ─────────────────────────────────────────────────────────────
-    flagsmithEnvKey:   &flagsmithEnvKey   "ser.Q98WZ3Yv9rTFcJfSUbQuTR"
-    flagsmithApiUrl:   &flagsmithApiUrl   "http://flagsmith-api.platformx-infra.svc.cluster.local:8000"
+    flagsmithEnvKey: &flagsmithEnvKey "ser.Q98WZ3Yv9rTFcJfSUbQuTR"
+    flagsmithApiUrl: &flagsmithApiUrl "http://flagsmith-api.platformx-infra.svc.cluster.local:8000"
     flagsmithApiV1Url: &flagsmithApiV1Url "http://flagsmith-api.platformx-infra.svc.cluster.local:8000/api/v1/"
-
     # ── Loki ─────────────────────────────────────────────────────────────────
     lokiUrl: &lokiUrl "http://loki.platformx-observability.svc.cluster.local:3100/loki/api/v1/push"
-
     # ── OTEL collector gRPC host (no http:// — used by OTLP_* endpoint vars) ─
     otelGrpcHostOnly: &otelGrpcHostOnly "otel-collector-opentelemetry-collector.platformx-observability.svc.cluster.local:4317"
-
     # ── Inter-service address templates (resolved at render time via tpl) ─────
-    messageStoreGrpc:     &msgStoreGrpc     "{{ include \"sparrowx.messageStore.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local:8081"
-    messageStoreHost:     &msgStoreHost     "{{ include \"sparrowx.messageStore.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local"
+    messageStoreGrpc: &msgStoreGrpc "{{ include \"sparrowx.messageStore.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local:8081"
+    messageStoreHost: &msgStoreHost "{{ include \"sparrowx.messageStore.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local"
     messageTransformGrpc: &msgTransformGrpc "{{ include \"sparrowx.messageTransformation.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local:50053"
-    commsIpsGrpc:         &commsIpsGrpcTpl  "{{ include \"sparrowx.raastCommsIps.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local:50051"
-
+    commsIpsGrpc: &commsIpsGrpcTpl "{{ include \"sparrowx.raastCommsIps.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local:50051"
     # ── Dapr sidecar localhost addresses ──────────────────────────────────────
-    daprHttpSidecar:      &daprHttpSidecar      "http://localhost:3500"
-    daprGrpcSidecar:      &daprGrpcSidecar      "http://localhost:50001"
-
+    daprHttpSidecar: &daprHttpSidecar "http://localhost:3500"
+    daprGrpcSidecar: &daprGrpcSidecar "http://localhost:50001"
     # ── Common Dapr invoke paths ─────────────────────────────────────────────
     channelServiceDaprUrl: &channelServiceDaprUrl "http://localhost:3500/v1.0/invoke/channelservice/method/api/v1/channels"
-    batchServiceDaprUrl:   &batchServiceDaprUrl   "http://localhost:3500/v1.0/invoke/platform-service-batch/method/api/v1"
-    hostSindhBankDaprUrl:  &hostSindhBankDaprUrl  "http://localhost:3500/v1.0/invoke/host-service-sindh-bank/method"
-    messageStoreDaprUrl:   &messageStoreDaprUrl   "http://localhost:3500/v1.0/invoke/messagestore/method"
-
+    batchServiceDaprUrl: &batchServiceDaprUrl "http://localhost:3500/v1.0/invoke/platform-service-batch/method/api/v1"
+    hostSindhBankDaprUrl: &hostSindhBankDaprUrl "http://localhost:3500/v1.0/invoke/host-service-sindh-bank/method"
+    messageStoreDaprUrl: &messageStoreDaprUrl "http://localhost:3500/v1.0/invoke/messagestore/method"
     # ── Service app IDs ───────────────────────────────────────────────────────
-    platformBatchAppId:  &platformBatchAppId  "platform-service-batch"
-    hostSindhBankAppId:  &hostSindhBankAppId  "host-service-sindh-bank"
-    msgTransformAppId:   &msgTransformAppId   "messagetransformation"
-    auditEventsSub:      &auditEventsSub      "audit-trail-service"
-    messageStoreAppId:   &messageStoreAppId   "messagestore"
-
+    platformBatchAppId: &platformBatchAppId "platform-service-batch"
+    hostSindhBankAppId: &hostSindhBankAppId "host-service-sindh-bank"
+    msgTransformAppId: &msgTransformAppId "messagetransformation"
+    auditEventsSub: &auditEventsSub "audit-trail-service"
+    messageStoreAppId: &messageStoreAppId "messagestore"
     # ── Log file path ─────────────────────────────────────────────────────────
     appLogFilePath: &appLogFilePath "/app/logs/application.log"
-
     # ── Actuator endpoints ───────────────────────────────────────────────────
     managementEndpoints: &managementEndpoints "health,info,metrics,prometheus"
-
     # ── RAAST comms family shared config ─────────────────────────────────────
-    raastCommsHttpEndpoint:    &raastCommsHttpEndpoint    "http://raast-simulator:7001/output"
-    raastCommsJavaOpts:        &raastCommsJavaOpts        "-Xms512m -Xmx1024m"
+    raastCommsHttpEndpoint: &raastCommsHttpEndpoint "http://raast-simulator:7001/output"
+    raastCommsJavaOpts: &raastCommsJavaOpts "-Xms512m -Xmx1024m"
     raastCommsOtelPropagators: &raastCommsOtelPropagators "tracecontext,baggage"
-    raastCommsOtelResources:   &raastCommsOtelResources   "service.name=raast-comms,deployment.environment=production"
-    p2pSendingQueue:           &p2pSendingQueue           "p2p-sending-queue"
-    p2pReceivingQueue:         &p2pReceivingQueue         "p2p-receiving-queue"
-
+    raastCommsOtelResources: &raastCommsOtelResources "service.name=raast-comms,deployment.environment=production"
+    p2pSendingQueue: &p2pSendingQueue "p2p-sending-queue"
+    p2pReceivingQueue: &p2pReceivingQueue "p2p-receiving-queue"
     # ── Cross-service shared identifiers ────────────────────────────────────
     raastServiceTokenGrpc: &raastServiceTokenGrpc "raast-service-token"
     raastBatchProjectName: &raastBatchProjectName "raast-batch-workflows"
-    platformNetworkName:   &platformNetworkName   "platform-network"
+    platformNetworkName: &platformNetworkName "platform-network"
     transactionEventsTopic: &transactionEventsTopic "transaction-events"
-
     # ── Cross-service template URLs ──────────────────────────────────────────
-    raastBackendUrl:          &raastBackendUrl          "http://{{ include \"sparrowx.raastSimulatorBackend.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local:7002"
-    notifGatewayInternalUrl:  &notifGatewayInternalUrl  "http://{{ include \"sparrowx.notificationGateway.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local:8080"
-    raastRedisHost:           &raastRedisHost            "{{ include \"sparrowx.redisRaast.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local"
-    keycloakInternalUrl:      &keycloakInternalUrl      "http://keycloak-dev.platformx-infra.svc.cluster.local:8080"
-    keycloakInternalIssuer:   &keycloakInternalIssuer "http://keycloak-dev.platformx-infra.svc.cluster.local:8080/realms/platformx"
-    cpmKeycloakIssuer:        &cpmKeycloakIssuer      "https://cpmkeycloakdev.tpsonline.com/realms/master"
-    tempoEndpoint:            &tempoEndpoint          "http://tempo.platformx-observability.svc.cluster.local:3200"
-
+    raastBackendUrl: &raastBackendUrl "http://{{ include \"sparrowx.raastSimulatorBackend.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local:7002"
+    notifGatewayInternalUrl: &notifGatewayInternalUrl "http://{{ include \"sparrowx.notificationGateway.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local:8080"
+    raastRedisHost: &raastRedisHost "{{ include \"sparrowx.redisRaast.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local"
+    keycloakInternalUrl: &keycloakInternalUrl "http://keycloak-dev.platformx-infra.svc.cluster.local:8080"
+    keycloakInternalIssuer: &keycloakInternalIssuer "http://keycloak-dev.platformx-infra.svc.cluster.local:8080/realms/platformx"
+    cpmKeycloakIssuer: &cpmKeycloakIssuer "https://cpmkeycloakdev.tpsonline.com/realms/master"
+    tempoEndpoint: &tempoEndpoint "http://tempo.platformx-observability.svc.cluster.local:3200"
     # ── Observability OTEL resource attributes ───────────────────────────────
     otelResourceAttrsDev: &otelResourceAttrsDev "deployment.environment=development,service.version=1.0.0"
-
     # ── RAAST CAS JWT client token (CAS service + comms workers) ─────────────
     casClientToken: &casClientToken "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsIng1dCI6IkxERDBNNGpyWU9POWNHanZSN25rZjk3UklYMCJ9.eyJpc3MiOiJTQ0JMUEtLQUZOUlQiLCJpYXQiOjE3NDA1NzA2OTMsImFzcnZfdHlwZSI6ImNsaWVudCIsImFzcnZfY2VydF9pc3MiOiIgQ04gPSB0ZXN0LVRTVC1BRC1DQSwgREMgPSB0ZXN0LCBEQyA9IG1wZyxEQyA9IGxvY2FsIiwiYXNydl9jZXJ0X3NuIjoiNkMwMDAwMDAzNUQyNkM5RjhEMUU0NDlDNUYwMDAxMDAwMDAwMzUiLCJleHAiOjE3NDA2MDA2OTN9.H1eAVZZzkOyAzztAazvJejOyMxEk1p4FQ4BBeyVBAHzh9iFT4dTwgxxfHz7Rx3xx0PocUCFIbMiLZLG6mL88Ck19XGc2-zxF8G3aNFnim6OQR2HF8P3y3KONMo2O8JKADRUMDWXw3bAgKW9ChyLXBlZ3wiPmurTWKzHh8angBIO-58IllngQUwbfXIGio9eEHRfquhrhIcOTw-O7RggkbpkUBKZCzdlclS_f5gIJlwjbMFAQ1MKQLitMsdsbgyiRCqHhAvWag9xwhSJ3j9hNTBFJcIVjgAg-Y3SOnWkUKEiZ2KZzbRaCbRJcUYJdf-eBVeK802aGydTGAigO8gQ2wQ"
-
   # Global tagging — applied to every resource (team, cost-centre, env, etc.)
   commonLabels: {}
   commonAnnotations: {}
-
   # Global Node Selector - can be overridden per service
   nodeSelector: {}
-
   # Scheduling controls
   tolerations: []
   topologySpreadConstraints: []
-
   # Extensibility hooks — applied to all pods unless overridden per service
   podAnnotations: {}
   podLabels: {}
@@ -198,44 +164,39 @@ global:
   extraEnvFrom: []
   extraVolumes: []
   extraVolumeMounts: []
-
   # Global Service Account configuration
   serviceAccount:
     create: true
     automountServiceAccountToken: true
     annotations: {}
     labels: {}
-
   # Global Pod and Container Security Contexts - applied to all services unless overridden
   # Empty by default for cross-platform compatibility (EKS, AKS, OpenShift).
   # Override per platform as needed. Examples:
   #   EKS/AKS:    podSecurityContext: { runAsNonRoot: true, runAsUser: 1000, fsGroup: 1000, seccompProfile: { type: RuntimeDefault } }
   #   OpenShift:   podSecurityContext: {}  (let OpenShift assign UIDs from namespace range)
   podSecurityContext: {}
-
   # Global Container Security Context - applied to all containers in all services unless overridden
   # Override per platform as needed. Examples:
   #   EKS/AKS:    containerSecurityContext: { allowPrivilegeEscalation: false, runAsNonRoot: true, runAsUser: 1000, capabilities: { drop: ["ALL"] } }
   #   OpenShift:   containerSecurityContext: { allowPrivilegeEscalation: false, capabilities: { drop: ["ALL"] } }
   containerSecurityContext: {}
-
 # ==============================================================================
 # Shared Secrets
 # ==============================================================================
 secrets:
   dockerRegistry:
     enabled: false
-    nameOverride: ""                  # generated: <release>-docker-registry-secret
-    dockerConfigJson: ""              # base64-encoded .dockerconfigjson
+    nameOverride: "" # generated: <release>-docker-registry-secret
+    dockerConfigJson: "" # base64-encoded .dockerconfigjson
   vault:
     enabled: true
-    nameOverride: ""  # generated: <release>-vault-token-secret
-    rootToken: *vaultToken             # Vault root token from platformx-infra
+    nameOverride: "" # generated: <release>-vault-token-secret
+    rootToken: *vaultToken # Vault root token from platformx-infra
   redis:
     enabled: true
-    nameOverride: ""                  # generated: <release>-redis-password-secret
+    nameOverride: "" # generated: <release>-redis-password-secret
     password: *redisPassword
-
 # ==============================================================================
 # Dapr Components
 # ==============================================================================
@@ -244,46 +205,37 @@ dapr:
     pubsub:
       enabled: true
       name: platformx-pubsub
-
       # redisHost: redis-master.platformx-infra.svc.cluster.local:6379  # rendered via template helper
       redisPassword: *redisPassword
       enableTLS: "false"
-
       maxRetries: "3"
       maxRetryBackoff: 2s
       redeliverInterval: 60s
       processingTimeout: "30s"
-
       redisType: node
       redisDB: "0"
       streamTTL: 720h
       autoAck: "false"
       claimInterval: 120s
-
       # ── Throughput ─────────────────
       queueDepth: "100"
       concurrency: "10"
       maxLenApprox: "100000"
-
       # ── Dead Letter ────────────────
       deliveryDeadLetterTopic: sparrowx-dead-letter-queue
       deadLetterTTL: 168h
       deadLetterQueueConsumerGroupName: sparrowx-dlq-consumer
-      
     state:
       enabled: true
       name: redis-state
-
   vault:
     secretstore:
       enabled: true
       name: vault-secretstore
-
   k8s:
     secretstore:
       enabled: true
       name: k8s-secretstore
-
 # ==============================================================================
 # DASHBOARD IMPORT JOB
 # ==============================================================================
@@ -292,24 +244,21 @@ dashboardImportJob:
   ttlSecondsAfterFinished: 600
   backoffLimit: 1
   grafanaImporterImage: "grafana/grafana:latest"
-  
   grafana:
     # Grafana URL - auto-constructed from global.obsNamespace if not set
-    url: ""  # Default: http://grafana.platformx-observability.svc.cluster.local:3000
+    url: "" # Default: http://grafana.platformx-observability.svc.cluster.local:3000
     user: "admin"
     password: "admin"
     datasource:
       uid: "prometheus"
       name: "Prometheus"
-
 # ==============================================================================
 # BACKOFFICE
 # ==============================================================================
 backoffice:
   enabled: true
-  nameOverride: ""  # generated: <release>-backoffice
+  nameOverride: "" # generated: <release>-backoffice
   replicas: 1
-
   # Deployment settings
   progressDeadlineSeconds: 600
   revisionHistoryLimit: 10
@@ -326,25 +275,20 @@ backoffice:
     repository: devopstps/platform-backoffice
     tag: "v0.1.46"
     pullPolicy: IfNotPresent
-
   serviceAccount:
     create: true
     name: ""
     automountServiceAccountToken: true
     annotations: {}
     labels: {}
-
   podSecurityContext: {}
-
   containerSecurityContext: {}
-  
   service:
     type: ClusterIP
     ports:
       - name: http
         port: 3000
         targetPort: 3000
-
   resources:
     requests:
       memory: "256Mi"
@@ -352,20 +296,16 @@ backoffice:
     limits:
       memory: "512Mi"
       cpu: "500m"
-
   autoscaling:
     enabled: true
     minReplicas: 1
     maxReplicas: 3
     targetCPUUtilizationPercentage: 75
     targetMemoryUtilizationPercentage: 80
-
   pdb:
     enabled: false
     minAvailable: 1
-
   nodeSelector: {}
-
   ingress:
     enabled: false
     healthcheckPath: "/"
@@ -379,7 +319,6 @@ backoffice:
       - secretName: backoffice-tls
         hosts:
           - "backoffice.tpsonline.com"
-
   route:
     enabled: true
     hosts:
@@ -387,7 +326,6 @@ backoffice:
     tls:
       insecureEdgeTerminationPolicy: "Redirect"
       tlsTermination: "edge"
-
   # Synced from: backoffice-config ConfigMap
   config:
     AD_KEYCLOAK_CLIENT_ID: "backoffice"
@@ -450,37 +388,30 @@ backoffice:
     PERSONALIZATION_PORT: "3001"
     PERSONALIZATION_URL: "http://personalization:3001"
     ROUTING_API_URL: "http://{{ include \"sparrowx.routing.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local:8080"
-
   secrets:
     BACKOFFICE_DB_PWD: cG9zdGdyZXM=
     BACKOFFICE_REDIS_PASSWORD: cmVkaXNTZWN1cmVQYXNzd29yZDEyMw==
     JWT_SECRET: eW91ci1zdXBlci1zZWNyZXQtand0LWtleS1jaGFuZ2UtdGhpcy1pbi1wcm9kdWN0aW9u
     METABASE_SECRET_KEY: MGRkNTZhODg0YjYxYTgzMzYyMDZjNjFmNDQxMjI2ODliYTM2NTQ0ODczN2M0MzQ5YzAyY2U4MWNjNTgzMWEyYQ==
-
 # ==============================================================================
 # CHANNEL SERVICE
 # ==============================================================================
 channelService:
   enabled: true
-  nameOverride: ""  # generated: <release>-channelservice
+  nameOverride: "" # generated: <release>-channelservice
   replicas: 1
-
   image:
     repository: devopstps/platform-service-channel
     tag: "M-0.0.1"
     pullPolicy: IfNotPresent
-
   serviceAccount:
     create: true
     name: ""
     automountServiceAccountToken: true
     annotations: {}
     labels: {}
-
   podSecurityContext: {}
-
   containerSecurityContext: {}
-
   service:
     type: ClusterIP
     ports:
@@ -493,7 +424,6 @@ channelService:
       - name: metrics
         port: 9091
         targetPort: 9091
-
   dapr:
     enabled: true
     appId: "channelservice"
@@ -505,7 +435,6 @@ channelService:
     enableAppHealthCheck: true
     healthCheckPath: "/health"
     healthCheckInterval: "30s"
-
   resources:
     requests:
       memory: "512Mi"
@@ -513,20 +442,16 @@ channelService:
     limits:
       memory: "1Gi"
       cpu: "1000m"
-
   autoscaling:
     enabled: true
     minReplicas: 1
     maxReplicas: 3
     targetCPUUtilizationPercentage: 75
     targetMemoryUtilizationPercentage: 80
-
   pdb:
     enabled: false
     minAvailable: 1
-
   nodeSelector: {}
-
   # Synced from: channelservice-config ConfigMap
   config:
     ASPNETCORE_ENVIRONMENT: Development
@@ -560,27 +485,23 @@ channelService:
     SSL_MODE: HTTP
     SSL_REDIRECT_TO_HTTPS: "false"
     SWAGGER__SERVERURL: /channel
-
 # ==============================================================================
 # MESSAGE STORE
 # ==============================================================================
 messageStore:
   enabled: true
-  nameOverride: ""  # generated: <release>-messagestore
+  nameOverride: "" # generated: <release>-messagestore
   replicas: 1
-
   image:
     repository: devopstps/platform-service-message-store
     tag: "M-0.0.1"
     pullPolicy: IfNotPresent
-
   serviceAccount:
     create: true
     name: ""
     automountServiceAccountToken: true
     annotations: {}
     labels: {}
-
   service:
     type: ClusterIP
     ports:
@@ -593,7 +514,6 @@ messageStore:
       - name: metrics
         port: 9090
         targetPort: 9090
-
   dapr:
     enabled: true
     appId: *messageStoreAppId
@@ -603,7 +523,6 @@ messageStore:
     enableAppHealthCheck: true
     healthCheckPath: "/health"
     healthCheckInterval: "30s"
-
   resources:
     requests:
       memory: "512Mi"
@@ -611,20 +530,16 @@ messageStore:
     limits:
       memory: "1Gi"
       cpu: "1000m"
-
   autoscaling:
     enabled: true
     minReplicas: 1
     maxReplicas: 3
     targetCPUUtilizationPercentage: 75
     targetMemoryUtilizationPercentage: 80
-
   pdb:
     enabled: false
     minAvailable: 1
-
   nodeSelector: {}
-
   # Synced from: messagestore-config ConfigMap
   config:
     ASPNETCORE_ENVIRONMENT: Development
@@ -657,34 +572,29 @@ messageStore:
     Secrets__RedisSecretKey: messagestore/redis-connectionstring
     VAULT_POSTGRESQL_SECRET_KEY: messagestore/postgresql-connectionstring
     # VAULT_SECRET_STORE_NAME: *daprSecretStore
-
 # ==============================================================================
 # MESSAGE TRANSFORMATION
 # ==============================================================================
 messageTransformation:
   enabled: true
-  nameOverride: ""  # generated: <release>-messagetransformation
+  nameOverride: "" # generated: <release>-messagetransformation
   replicas: 1
-
   image:
     repository: devopstps/raast-service-message-transformation
     tag: "v1.0.18"
     pullPolicy: IfNotPresent
-
   serviceAccount:
     create: true
     name: ""
     automountServiceAccountToken: true
     annotations: {}
     labels: {}
-
   # podSecurityContext:
   #   runAsNonRoot: false    # nginx master runs as root, workers drop privs
   #   runAsUser: 0
   #   fsGroup: 0
   #   seccompProfile:
   #     type: RuntimeDefault
-
   containerSecurityContext:
     allowPrivilegeEscalation: false
     readOnlyRootFilesystem: false
@@ -692,7 +602,6 @@ messageTransformation:
     runAsUser: 0
     capabilities:
       drop: []
-
   service:
     type: ClusterIP
     ports:
@@ -708,14 +617,12 @@ messageTransformation:
       - name: TCP
         port: 8080
         targetPort: 8080
-
   dapr:
     enabled: true
     appId: *msgTransformAppId
     appPort: "50053"
     appProtocol: "grpc"
     metricsPort: "9090"
-
   resources:
     requests:
       memory: "512Mi"
@@ -723,25 +630,20 @@ messageTransformation:
     limits:
       memory: "1Gi"
       cpu: "1000m"
-
   autoscaling:
     enabled: true
     minReplicas: 1
     maxReplicas: 3
     targetCPUUtilizationPercentage: 75
     targetMemoryUtilizationPercentage: 80
-
   pdb:
     enabled: false
     minAvailable: 1
-
   nodeSelector: {}
-
   # Controls the XSD ConfigMap volume mounted at /app/xsd
   xsdVolume:
     enabled: true
     configMapName: messagetransformation-xsd-config
-
   # Synced from: messagetransformation-config ConfigMap
   config:
     CAMEL_LAZY_INIT: "false"
@@ -775,53 +677,46 @@ messageTransformation:
     SPRING_LAZY_INIT: "true"
     SWAGGER_ENABLED: "true"
     SWAGGER_UI_ENABLED: "true"
-  # TEMPORAL_SERVICE_URL: temporal-frontend.platformx-infra.svc.cluster.local:7233  # rendered via template helper
+    # TEMPORAL_SERVICE_URL: temporal-frontend.platformx-infra.svc.cluster.local:7233  # rendered via template helper
     TOMCAT_MAX_THREADS: "200"
     TOMCAT_MIN_SPARE_THREADS: "25"
     TRACING_ENABLED: "true"
     TRACING_SAMPLING_RATE: "0.1"
     XSD_BASE_PATH: classpath:xsd/
     XSD_VALIDATION_ENABLED: "true"
-
   secrets:
     caCertificate:
     # Base64-encoded PEM certificate (cert chain for this service)
     certificate:
     # Base64-encoded PEM private key
-    privateKey: 
-
+    privateKey:
 # ==============================================================================
 # NOVU
 # ==============================================================================
 novu:
   enabled: false
-
 # # ==============================================================================
 # # RAAST WORKER
 # # ==============================================================================
 raastWorker:
   enabled: false
-
 # ==============================================================================
 # REST SERVER
 # ==============================================================================
 restServer:
   enabled: true
-  nameOverride: ""  # generated: <release>-restserver
+  nameOverride: "" # generated: <release>-restserver
   replicas: 1
-
   image:
     repository: devopstps/platform-comms-rest-server
     tag: "v2.2.12"
     pullPolicy: IfNotPresent
-
   serviceAccount:
     create: true
     name: ""
     automountServiceAccountToken: true
     annotations: {}
     labels: {}
-
   podSecurityContext: {}
   containerSecurityContext:
     allowPrivilegeEscalation: false
@@ -830,7 +725,6 @@ restServer:
     runAsUser: 0
     capabilities:
       drop: []
-
   service:
     type: ClusterIP
     ports:
@@ -846,7 +740,6 @@ restServer:
       - name: metrics
         port: 9191
         targetPort: 9191
-
   dapr:
     enabled: true
     appId: "restserver"
@@ -854,7 +747,6 @@ restServer:
     enableAppHealthCheck: true
     healthCheckPath: "/health"
     healthCheckInterval: "30s"
-
   resources:
     requests:
       memory: "512Mi"
@@ -862,20 +754,16 @@ restServer:
     limits:
       memory: "1Gi"
       cpu: "1000m"
-
   autoscaling:
     enabled: true
     minReplicas: 1
     maxReplicas: 3
     targetCPUUtilizationPercentage: 75
     targetMemoryUtilizationPercentage: 80
-
   pdb:
     enabled: false
     minAvailable: 1
-
   nodeSelector: {}
-
   ingress:
     enabled: false
     healthcheckPath: "/health"
@@ -888,7 +776,6 @@ restServer:
       - secretName: tpsplatform-tls
         hosts:
           - service.tpsonline.com
-
   route:
     enabled: true
     hosts:
@@ -896,7 +783,6 @@ restServer:
     tls:
       insecureEdgeTerminationPolicy: "Redirect"
       tlsTermination: "edge"
-
   # Synced from: restserver-config ConfigMap
   config:
     # CHANNEL_CODE: REST_SERVER
@@ -941,36 +827,30 @@ restServer:
     TEMPORAL_RESULT_TIMEOUT: "40000"
     TRACING_ENABLED: "true"
     TRACING_SAMPLING_RATE: "1.0"
-
 # ==============================================================================
 # P2P SENDING WORKER (main workflow runner)
 # ==============================================================================
 p2pSendingWorker:
   enabled: true
-  nameOverride: ""  # generated: <release>-raast-p2p-sending-workflow
+  nameOverride: "" # generated: <release>-raast-p2p-sending-workflow
   replicas: 1
-
   image:
     repository: devopstps/raast-p2p-sending-worker
     tag: "test-0.0.1"
     pullPolicy: IfNotPresent
-
   javaOpts: "-Xms256m -Xmx512m"
-
   serviceAccount:
     create: true
     name: ""
     automountServiceAccountToken: true
     annotations: {}
     labels: {}
-
   service:
     type: ClusterIP
     ports:
       - name: http
         port: 8080
         targetPort: 8080
-
   dapr:
     enabled: true
     appId: "raast-p2p-sending-workflow"
@@ -982,7 +862,6 @@ p2pSendingWorker:
     enableAppHealthCheck: true
     healthCheckPath: "/health"
     healthCheckInterval: "30s"
-
   resources:
     requests:
       memory: "256Mi"
@@ -990,22 +869,18 @@ p2pSendingWorker:
     limits:
       memory: "512Mi"
       cpu: "500m"
-
   autoscaling:
     enabled: true
     minReplicas: 1
     maxReplicas: 3
     targetCPUUtilizationPercentage: 75
     targetMemoryUtilizationPercentage: 80
-
   pdb:
     enabled: false
     minAvailable: 1
-
   nodeSelector: {}
   podSecurityContext: {}
   containerSecurityContext: {}
-
   # Synced from: raast-p2p-sending-workflow ConfigMap
   config:
     APP_LOG_LEVEL: INFO
@@ -1058,31 +933,27 @@ p2pSendingWorker:
     RAAST_COMMS_SERVICE_REQUEST_TIMEOUT: "30"
     SERVER_PORT: "8080"
     SERVICE_VERSION: 0.0.1-SNAPSHOT
-  # TEMPORAL_ADDRESS: temporal-frontend.platformx-infra.svc.cluster.local:7233  # rendered via template helper
+    # TEMPORAL_ADDRESS: temporal-frontend.platformx-infra.svc.cluster.local:7233  # rendered via template helper
     TEMPORAL_LOG_LEVEL: WARN
     TEMPORAL_NAMESPACE: *temporalNamespace
     TEMPORAL_TASK_QUEUE: *p2pSendingQueue
-
 # ==============================================================================
 # CONFIGURATION SERVICE
 # ==============================================================================
 configuration:
   enabled: true
-  nameOverride: ""  # generated: <release>-configuration
+  nameOverride: "" # generated: <release>-configuration
   replicas: 1
-
   image:
     repository: devopstps/platform-service-configuration
     tag: "M-0.0.2"
     pullPolicy: IfNotPresent
-
   serviceAccount:
     create: true
     name: ""
     automountServiceAccountToken: true
     annotations: {}
     labels: {}
-
   service:
     type: ClusterIP
     ports:
@@ -1095,7 +966,6 @@ configuration:
       - name: metrics
         port: 9091
         targetPort: 9091
-
   dapr:
     enabled: true
     appId: "configuration"
@@ -1107,7 +977,6 @@ configuration:
     enableAppHealthCheck: true
     healthCheckPath: "/health"
     healthCheckInterval: "30s"
-
   resources:
     requests:
       memory: "1000Mi"
@@ -1115,20 +984,16 @@ configuration:
     limits:
       memory: "2Gi"
       cpu: "2000m"
-
   autoscaling:
     enabled: true
     minReplicas: 1
     maxReplicas: 3
     targetCPUUtilizationPercentage: 75
     targetMemoryUtilizationPercentage: 80
-
   pdb:
     enabled: false
     minAvailable: 1
-
   nodeSelector: {}
-
   # Synced from: configuration-config ConfigMap
   config:
     ASPNETCORE_ENVIRONMENT: Development
@@ -1163,7 +1028,6 @@ configuration:
     REDIS_HOST: *raastRedisHost
     SECRET_STORE_NAME: *daprSecretStore
     SWAGGER__SERVERURL: /configuration
-  
   ingress:
     enabled: false
     healthcheckPath: "/healthz"
@@ -1176,7 +1040,6 @@ configuration:
       - secretName: tpsplatform-tls
         hosts:
           - "configuration.tpsonline.com"
-
   route:
     enabled: true
     hosts:
@@ -1184,29 +1047,23 @@ configuration:
     tls:
       insecureEdgeTerminationPolicy: "Redirect"
       tlsTermination: "edge"
-
 # ==============================================================================
 # ROUTING SERVICE
 # ==============================================================================
 routing:
   enabled: false
-  nameOverride: ""  # generated: <release>-routing
+  nameOverride: "" # generated: <release>-routing
   replicas: 1
-
   image:
     repository: devopstps/platform-service-routing
     tag: "v0.0.6"
     pullPolicy: IfNotPresent
-
   serviceAccount:
     create: true
     name: ""
     automountServiceAccountToken: true
     annotations: {}
     labels: {}
-
-
-
   service:
     type: ClusterIP
     ports:
@@ -1219,7 +1076,6 @@ routing:
       - name: metrics
         port: 9093
         targetPort: 9093
-
   dapr:
     enabled: true
     appId: "routing"
@@ -1231,7 +1087,6 @@ routing:
     enableAppHealthCheck: true
     healthCheckPath: "/actuator/health"
     healthCheckInterval: "30s"
-
   resources:
     requests:
       memory: "512Mi"
@@ -1239,20 +1094,16 @@ routing:
     limits:
       memory: "1Gi"
       cpu: "1000m"
-
   autoscaling:
     enabled: true
     minReplicas: 1
     maxReplicas: 3
     targetCPUUtilizationPercentage: 75
     targetMemoryUtilizationPercentage: 80
-
   pdb:
     enabled: false
     minAvailable: 1
-
   nodeSelector: {}
-
   # Synced from: routing-config ConfigMap
   config:
     DAPR_GRPC_ENDPOINT: localhost:50001
@@ -1284,36 +1135,29 @@ routing:
     SERVER_BASE_PATH: /routing
     SERVER_PORT: "8080"
     SPRING_JPA_HIBERNATE_DDL_AUTO: none
-
 # ==============================================================================
 # AUDIT TRAIL
 # ==============================================================================
 auditTrail:
   enabled: true
-  nameOverride: ""  # generated: <release>-audit-trail
+  nameOverride: "" # generated: <release>-audit-trail
   replicas: 1
-
   image:
     repository: devopstps/platform-service-audit-trail
     tag: "v0.0.4"
     pullPolicy: IfNotPresent
-
   serviceAccount:
     create: true
     name: ""
     automountServiceAccountToken: true
     annotations: {}
     labels: {}
-
-
-
   service:
     type: ClusterIP
     ports:
       - name: http
         port: 5000
         targetPort: 5000
-
   dapr:
     enabled: true
     appId: "platform-service-audit-trail"
@@ -1325,7 +1169,6 @@ auditTrail:
     enableAppHealthCheck: true
     healthCheckPath: "/health"
     healthCheckInterval: "30s"
-
   resources:
     requests:
       memory: "512Mi"
@@ -1333,20 +1176,16 @@ auditTrail:
     limits:
       memory: "1Gi"
       cpu: "1000m"
-
   autoscaling:
     enabled: true
     minReplicas: 1
     maxReplicas: 3
     targetCPUUtilizationPercentage: 75
     targetMemoryUtilizationPercentage: 80
-
   pdb:
     enabled: false
     minAvailable: 1
-
   nodeSelector: {}
-
   # Synced from: platform-service-audit-trail-config ConfigMap
   config:
     ASPNETCORE_ENVIRONMENT: Development
@@ -1364,7 +1203,7 @@ auditTrail:
     Dapr__HttpPort: "3500"
     Dapr__SecretStoreName: *daprSecretStore
     Dapr__StateStoreName: *daprStateStore
-  # Database__ConnectionString: Host=postgresql.platformx-infra.svc.cluster.local;Port=5432;Username=postgres;Password=postgres;Database=platformdb  # rendered via template helper
+    # Database__ConnectionString: Host=postgresql.platformx-infra.svc.cluster.local;Port=5432;Username=postgres;Password=postgres;Database=platformdb  # rendered via template helper
     HEALTH_CHECK_INTERVAL_SECONDS: "30"
     HEALTH_CHECK_TIMEOUT_SECONDS: "10"
     KEYCLOAK_BASE_URL: *keycloakInternalUrl
@@ -1375,14 +1214,14 @@ auditTrail:
     OTEL_METRICS_EXPORT_INTERVAL: "60000"
     OTEL_SERVICE_NAME: AuditTrailService
     OTEL_TRACES_SAMPLER: always_on
-  # POSTGRES_CONNECTION_STRING: Host=postgresql.platformx-infra.svc.cluster.local;Port=5432;Username=postgres;Password=postgres;Database=platformdb  # rendered via template helper
+    # POSTGRES_CONNECTION_STRING: Host=postgresql.platformx-infra.svc.cluster.local;Port=5432;Username=postgres;Password=postgres;Database=platformdb  # rendered via template helper
     POSTGRES_DB: audittrail
     # POSTGRES_HOST: *postgresHost
     # POSTGRES_PASSWORD: *postgresPassword
     # POSTGRES_PORT: *postgresPort
     # POSTGRES_USER: *postgresUser
-    PUBSUB_COMPONENT_NAME: *daprPubsubName  #previously redis-pubsub
-  # REDIS_HOST: redis-master.platformx-infra.svc.cluster.local:6379  # rendered via template helper
+    PUBSUB_COMPONENT_NAME: *daprPubsubName #previously redis-pubsub
+    # REDIS_HOST: redis-master.platformx-infra.svc.cluster.local:6379  # rendered via template helper
     REDIS_PASSWORD: *redisPassword
     REDIS_PORT: *redisPort
     SERILOG_FILE_PATH: logs/audit-trail-service-.log
@@ -1394,30 +1233,25 @@ auditTrail:
     SERILOG_WRITE_TO_CONSOLE: "true"
     SERILOG_WRITE_TO_FILE: "false"
     SERVICE_NAME: AuditTrailService
-
 # ==============================================================================
 # RAAST SERVICE CAS
 # ==============================================================================
 raastServiceCas:
   enabled: true
-  nameOverride: ""  # generated: <release>-raast-service-cas
+  nameOverride: "" # generated: <release>-raast-service-cas
   replicas: 1
-
   image:
     repository: devopstps/raast-service-cas
     tag: "M-0.0.1"
     pullPolicy: IfNotPresent
-
   serviceAccount:
     create: true
     name: ""
     automountServiceAccountToken: true
     annotations: {}
     labels: {}
-
   podSecurityContext: {}
   containerSecurityContext: {}
-
   service:
     type: ClusterIP
     ports:
@@ -1427,7 +1261,6 @@ raastServiceCas:
       - name: management
         port: 9096
         targetPort: 9096
-
   dapr:
     enabled: true
     appId: "raast-service-cas"
@@ -1436,7 +1269,6 @@ raastServiceCas:
     enableAppHealthCheck: true
     healthCheckPath: "/actuator/health"
     healthCheckInterval: "30s"
-
   resources:
     requests:
       memory: "500Mi"
@@ -1444,18 +1276,15 @@ raastServiceCas:
     limits:
       memory: "500Mi"
       cpu: "300m"
-
   autoscaling:
     enabled: true
     minReplicas: 1
     maxReplicas: 3
     targetCPUUtilizationPercentage: 75
     targetMemoryUtilizationPercentage: 80
-
   pdb:
     enabled: false
     minAvailable: 1
-
   # Synced from: raast-service-cas-config ConfigMap
   config:
     CAS_CLIENT_TOKEN: *casClientToken
@@ -1463,7 +1292,7 @@ raastServiceCas:
     CAS_TOKEN_EXPIRY_BUFFER_SECONDS: "0"
     CAS_TOKEN_GRPC_HOST: "{{ include \"sparrowx.raastServiceToken.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local"
     CAS_TOKEN_GRPC_PORT: "9097"
-    CAS_TOPIC_NAME: cas-events 
+    CAS_TOPIC_NAME: cas-events
     CHANNEL_URL: http://127.0.0.1:3500/v1.0/invoke/channelservice/method/api/v1/channels?is_active=true&protocol=HTTP&io_mode=CLIENT&type=CAS&code=CAS
     DAPR_CONFIG_STORE_ENABLED: "false"
     DAPR_GRPC_ENDPOINT: localhost:50001
@@ -1501,7 +1330,6 @@ raastServiceCas:
     VAULT_SECRET_DB_PATH: raast-service-cas/database
     VAULT_SECRET_REDIS_PATH: raast-service-cas/redis
     VAULT_SECRETSTORE_NAME: *daprSecretStore
-  
   ingress:
     enabled: false
     healthcheckPath: "/healthz"
@@ -1514,7 +1342,6 @@ raastServiceCas:
       - secretName: tpsplatform-tls
         hosts:
           - "cas.tpsonline.com"
-
   route:
     enabled: true
     hosts:
@@ -1522,30 +1349,25 @@ raastServiceCas:
     tls:
       insecureEdgeTerminationPolicy: "Redirect"
       tlsTermination: "edge"
-
 # ==============================================================================
 # RAAST SERVICE TOKEN
 # ==============================================================================
 raastServiceToken:
   enabled: true
-  nameOverride: ""  # generated: <release>-raast-service-token
+  nameOverride: "" # generated: <release>-raast-service-token
   replicas: 1
-
   image:
     repository: devopstps/raast-service-token
     tag: "v0.0.7"
     pullPolicy: IfNotPresent
-
   serviceAccount:
     create: true
     name: ""
     automountServiceAccountToken: true
     annotations: {}
     labels: {}
-
   podSecurityContext: {}
   containerSecurityContext: {}
-
   service:
     type: ClusterIP
     ports:
@@ -1558,7 +1380,6 @@ raastServiceToken:
       - name: grpc
         port: 9097
         targetPort: 9097
-
   dapr:
     enabled: true
     appId: *raastServiceTokenGrpc
@@ -1570,7 +1391,6 @@ raastServiceToken:
     enableAppHealthCheck: true
     healthCheckPath: "/actuator/health"
     healthCheckInterval: "30s"
-
   resources:
     requests:
       memory: "500Mi"
@@ -1578,18 +1398,15 @@ raastServiceToken:
     limits:
       memory: "500Mi"
       cpu: "300m"
-
   autoscaling:
     enabled: true
     minReplicas: 1
     maxReplicas: 3
     targetCPUUtilizationPercentage: 75
     targetMemoryUtilizationPercentage: 80
-
   pdb:
     enabled: false
     minAvailable: 1
-
   # Synced from: raast-service-token-config ConfigMap
   config:
     CHANNEL_SERVICE_URL: *channelServiceDaprUrl
@@ -1612,28 +1429,23 @@ raastServiceToken:
     TOKEN_SERVICE_LOCK_RETRY_INTERVAL_MS: "100"
     TOKEN_SERVICE_LOCK_TIMEOUT_MS: "30000"
     TOKEN_SERVICE_REST_PORT: "9096"
-
 # ==============================================================================
 # RAAST SERVICE LDAP
 # ==============================================================================
 raastServiceLdap:
   enabled: true
-  nameOverride: ""  # generated: <release>-raast-service-ldap
+  nameOverride: "" # generated: <release>-raast-service-ldap
   replicas: 1
-
   image:
     repository: devopstps/raast-service-ldap
     tag: "v0.0.32"
     pullPolicy: IfNotPresent
-
   serviceAccount:
     create: true
     name: ""
     automountServiceAccountToken: true
     annotations: {}
     labels: {}
-
-  
   containerSecurityContext:
     allowPrivilegeEscalation: false
     readOnlyRootFilesystem: false
@@ -1641,7 +1453,6 @@ raastServiceLdap:
     runAsUser: 0
     capabilities:
       drop: []
-
   service:
     type: ClusterIP
     ports:
@@ -1659,7 +1470,6 @@ raastServiceLdap:
     enableAppHealthCheck: true
     healthCheckPath: "/"
     healthCheckInterval: "30s"
-
   resources:
     requests:
       memory: "256Mi"
@@ -1667,18 +1477,15 @@ raastServiceLdap:
     limits:
       memory: "512Mi"
       cpu: "500m"
-
   autoscaling:
     enabled: true
     minReplicas: 1
     maxReplicas: 3
     targetCPUUtilizationPercentage: 75
     targetMemoryUtilizationPercentage: 80
-
   pdb:
     enabled: false
     minAvailable: 1
-
   # Synced from: raast-service-ldap-config ConfigMap
   config:
     CERTS_PATH: /run/secrets/certificate
@@ -1702,7 +1509,6 @@ raastServiceLdap:
     VAULT_SECRETS_ENGINE: secret
     VAULT_TOKEN: *vaultToken
     VAULT_URL: *vaultAddress
-  
   ingress:
     enabled: false
     healthcheckPath: "/healthz"
@@ -1715,7 +1521,6 @@ raastServiceLdap:
       - secretName: tpsplatform-tls
         hosts:
           - "raast-service-ldap.tpsonline.com"
-
   route:
     enabled: true
     hosts:
@@ -1723,29 +1528,23 @@ raastServiceLdap:
     tls:
       insecureEdgeTerminationPolicy: "Redirect"
       tlsTermination: "edge"
-
 # ==============================================================================
 # RAAST COMMS APG
 # ==============================================================================
 raastCommsApg:
   enabled: true
-  nameOverride: ""  # generated: <release>-raast-comms-apg
+  nameOverride: "" # generated: <release>-raast-comms-apg
   replicas: 1
-
   image:
     repository: devopstps/raast-comms-apg
     tag: "v0.0.11"
     pullPolicy: IfNotPresent
-
   serviceAccount:
     create: true
     name: ""
     automountServiceAccountToken: true
     annotations: {}
     labels: {}
-
-
-
   service:
     type: ClusterIP
     ports:
@@ -1755,7 +1554,6 @@ raastCommsApg:
       - name: metrics
         port: 9090
         targetPort: 9090
-
   dapr:
     enabled: true
     appId: "raast-comms-apg"
@@ -1764,7 +1562,6 @@ raastCommsApg:
     enableAppHealthCheck: false
     healthCheckPath: "/actuator/health"
     healthCheckInterval: "30s"
-
   resources:
     requests:
       memory: "512Mi"
@@ -1772,18 +1569,15 @@ raastCommsApg:
     limits:
       memory: "1Gi"
       cpu: "1000m"
-
   autoscaling:
     enabled: true
     minReplicas: 1
     maxReplicas: 3
     targetCPUUtilizationPercentage: 75
     targetMemoryUtilizationPercentage: 80
-
   pdb:
     enabled: false
     minAvailable: 1
-
   ingress:
     enabled: false
     healthcheckPath: "/healthz"
@@ -1796,7 +1590,6 @@ raastCommsApg:
       - secretName: tpsplatform-tls
         hosts:
           - "raast-comms-apg.tpsonline.com"
-
   route:
     enabled: false
     hosts:
@@ -1804,7 +1597,6 @@ raastCommsApg:
     tls:
       insecureEdgeTerminationPolicy: "Redirect"
       tlsTermination: "edge"
-
   # Synced from: raast-comms-apg-config ConfigMap
   config:
     # APP_PORT: "8080"
@@ -1823,8 +1615,8 @@ raastCommsApg:
     OTEL_EXPORTER_OTLP_ENDPOINT: *otelGrpcEndpoint
     OTEL_EXPORTER_OTLP_PROTOCOL: grpc
     OTEL_EXPORTER_PORT: '8889       # Prometheus metrics exporter'
-    OTEL_GRPC_PORT: "4317"  # OTLP gRPC receiver
-    OTEL_HTTP_PORT: "4318"  # OTLP HTTP receiver
+    OTEL_GRPC_PORT: "4317" # OTLP gRPC receiver
+    OTEL_HTTP_PORT: "4318" # OTLP HTTP receiver
     OTEL_JAVAAGENT_ENABLED: "true"
     OTEL_LOGS_EXPORTER: otlp
     OTEL_METRICS_EXPORTER: otlp
@@ -1833,33 +1625,29 @@ raastCommsApg:
     OTEL_SERVICE_NAME: raast-comms-apg
     OTEL_TRACES_EXPORTER: otlp
     OTEL_TRACES_SAMPLER: always_on
-    PROMETHEUS_PORT: "9090"  # Prometheus UI
+    PROMETHEUS_PORT: "9090" # Prometheus UI
     SERVER_PORT: "8080"
     SPRING_APPLICATION_NAME: raast-comms-apg
     TEMPO_ENDPOINT: *tempoEndpoint
     TEMPO_GRPC_PORT: "4317"
     TEMPO_PORT: "3200"
-
 # ==============================================================================
 # RAAST COMMS IPS
 # ==============================================================================
 raastCommsIps:
   enabled: true
-  nameOverride: ""  # generated: <release>-raast-comms-ips
+  nameOverride: "" # generated: <release>-raast-comms-ips
   replicas: 1
-
   image:
     repository: devopstps/raast-comms
     tag: "v2.4.1"
     pullPolicy: IfNotPresent
-
   serviceAccount:
     create: true
     name: ""
     automountServiceAccountToken: true
     annotations: {}
     labels: {}
-
   podSecurityContext: {}
   containerSecurityContext:
     allowPrivilegeEscalation: false
@@ -1868,7 +1656,6 @@ raastCommsIps:
     runAsUser: 0
     capabilities:
       drop: []
-
   service:
     type: ClusterIP
     ports:
@@ -1878,7 +1665,6 @@ raastCommsIps:
       - name: http
         port: 3500
         targetPort: 3500
-
   dapr:
     enabled: true
     appId: "raast-comms-ips"
@@ -1888,7 +1674,6 @@ raastCommsIps:
     enableAppHealthCheck: true
     healthCheckPath: "/actuator/health"
     healthCheckInterval: "30s"
-
   resources:
     requests:
       memory: "512Mi"
@@ -1896,18 +1681,15 @@ raastCommsIps:
     limits:
       memory: "1Gi"
       cpu: "1000m"
-
   autoscaling:
     enabled: true
     minReplicas: 1
     maxReplicas: 3
     targetCPUUtilizationPercentage: 75
     targetMemoryUtilizationPercentage: 80
-
   pdb:
     enabled: false
     minAvailable: 1
-
   # Synced from: raast-comms-ips-config ConfigMap
   config:
     CAMEL_LAZY_INIT: "false"
@@ -1975,7 +1757,7 @@ raastCommsIps:
     TEMPORAL_NAMESPACE: "default"
     TEMPORAL_P2P_RECEIVING_TASK_QUEUE: *p2pReceivingQueue
     TEMPORAL_P2P_SENDING_TASK_QUEUE: *p2pSendingQueue
-  # TEMPORAL_SERVICE_URL: temporal-frontend.platformx-infra.svc.cluster.local:7233  # rendered via template helper
+    # TEMPORAL_SERVICE_URL: temporal-frontend.platformx-infra.svc.cluster.local:7233  # rendered via template helper
     TEMPORAL_PORT: *temporalPort
     TEMPORAL_TASK_QUEUE: *p2pSendingQueue
     TIMER_PERIOD: "1000"
@@ -1984,27 +1766,23 @@ raastCommsIps:
     TOKEN_BROKER_GRPC_PORT: "50005"
     TRACING_ENABLED: "true"
     TRACING_SAMPLING_RATE: "0.1"
-
 # ==============================================================================
 # RAAST COMMS BPS
 # ==============================================================================
 raastCommsBps:
   enabled: true
-  nameOverride: ""  # generated: <release>-raast-comms-bps
+  nameOverride: "" # generated: <release>-raast-comms-bps
   replicas: 1
-
   image:
     repository: devopstps/raast-comms
     tag: "2.3.6"
     pullPolicy: IfNotPresent
-
   serviceAccount:
     create: true
     name: ""
     automountServiceAccountToken: true
     annotations: {}
     labels: {}
-
   podSecurityContext: {}
   containerSecurityContext:
     allowPrivilegeEscalation: false
@@ -2013,7 +1791,6 @@ raastCommsBps:
     runAsUser: 0
     capabilities:
       drop: []
-
   service:
     type: ClusterIP
     ports:
@@ -2023,7 +1800,6 @@ raastCommsBps:
       - name: http
         port: 3500
         targetPort: 3500
-
   dapr:
     enabled: true
     appId: "raast-comms-bps"
@@ -2033,7 +1809,6 @@ raastCommsBps:
     enableAppHealthCheck: true
     healthCheckPath: "/actuator/health"
     healthCheckInterval: "30s"
-
   resources:
     requests:
       memory: "512Mi"
@@ -2041,18 +1816,15 @@ raastCommsBps:
     limits:
       memory: "1Gi"
       cpu: "1000m"
-
   autoscaling:
     enabled: true
     minReplicas: 1
     maxReplicas: 3
     targetCPUUtilizationPercentage: 75
     targetMemoryUtilizationPercentage: 80
-
   pdb:
     enabled: false
     minAvailable: 1
-
   # Synced from: raast-comms-bps-config ConfigMap
   config:
     CAMEL_LAZY_INIT: "false"
@@ -2115,7 +1887,7 @@ raastCommsBps:
     TEMPORAL_NAMESPACE: "default"
     TEMPORAL_P2P_RECEIVING_TASK_QUEUE: *p2pReceivingQueue
     TEMPORAL_P2P_SENDING_TASK_QUEUE: *p2pSendingQueue
-  # TEMPORAL_SERVICE_URL: temporal-frontend.platformx-infra.svc.cluster.local:7233  # rendered via template helper
+    # TEMPORAL_SERVICE_URL: temporal-frontend.platformx-infra.svc.cluster.local:7233  # rendered via template helper
     TEMPORAL_TASK_QUEUE: *p2pSendingQueue
     TIMER_PERIOD: "1000"
     TOKEN_BROKER_CLIENT_TOKEN: *casClientToken
@@ -2123,47 +1895,38 @@ raastCommsBps:
     TOKEN_BROKER_GRPC_PORT: "50005"
     TRACING_ENABLED: "true"
     TRACING_SAMPLING_RATE: "0.1"
-    
-    
-
 # ==============================================================================
 # RAAST PORTAL OTC
 # ==============================================================================
 raastPortalOtc:
   enabled: true
-  nameOverride: ""  # generated: <release>-raast-portal-otc
+  nameOverride: "" # generated: <release>-raast-portal-otc
   replicas: 1
-
   image:
     repository: devopstps/raast-portal-otc
     tag: "v0.0.7"
     pullPolicy: IfNotPresent
-
   serviceAccount:
     create: true
     name: ""
     automountServiceAccountToken: true
     annotations: {}
     labels: {}
-
   # service:
   #   type: ClusterIP
   #   port: 3000
-  
   service:
     type: ClusterIP
     ports:
       - name: http
         port: 3000
         targetPort: 3000
-
   dapr:
     enabled: false
     appId: "raast-portal-otc"
     appPort: "3000"
     metricsPort: "9090"
     enableAppHealthCheck: false
-
   resources:
     requests:
       memory: "256Mi"
@@ -2171,18 +1934,15 @@ raastPortalOtc:
     limits:
       memory: "512Mi"
       cpu: "500m"
-
   autoscaling:
     enabled: true
     minReplicas: 1
     maxReplicas: 2
     targetCPUUtilizationPercentage: 75
     targetMemoryUtilizationPercentage: 80
-
   pdb:
     enabled: false
     minAvailable: 1
-
   # Synced from: raast-portal-otc-config ConfigMap
   config:
     CAS_PARTICIPANT_BIC: ""
@@ -2208,7 +1968,6 @@ raastPortalOtc:
     NEXTAUTH_URL: https://raast-portal-otc.tpsonline.com
     PLATFORM_COMMS_URL: "http://{{ include \"sparrowx.raastServiceCas.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local:9095"
     PORT: "3000"
-
 # ==============================================================================
 # RAAST SIMULATOR BACKEND
 # ==============================================================================
@@ -2216,19 +1975,16 @@ raastSimulatorBackend:
   enabled: false
   nameOverride: "raast-backend"
   replicas: 1
-
   image:
     repository: devopstps/raast-backend
     tag: "v0.0.19"
     pullPolicy: IfNotPresent
-
   serviceAccount:
     create: true
     name: ""
     automountServiceAccountToken: true
     annotations: {}
     labels: {}
-
   podSecurityContext: {}
   containerSecurityContext:
     allowPrivilegeEscalation: false
@@ -2244,7 +2000,6 @@ raastSimulatorBackend:
   extraEnvFrom: []
   extraVolumes: []
   extraVolumeMounts: []
-
   service:
     type: ClusterIP
     ports:
@@ -2264,7 +2019,6 @@ raastSimulatorBackend:
         port: 7004
         protocol: TCP
         targetPort: 7004
-
   resources:
     requests:
       memory: "256Mi"
@@ -2272,7 +2026,6 @@ raastSimulatorBackend:
     limits:
       memory: "512Mi"
       cpu: "500m"
-
   config:
     APG_PORT: "7005"
     BPS_PORT: "7004"
@@ -2294,26 +2047,22 @@ raastSimulatorBackend:
     UI_PORT: "7002"
     VITE_API_URL: *raastBackendUrl
     VITE_APP_NAME: RAAST Backend
-
 # ==============================================================================
 # RAAST SIMULATOR FRONTEND
 # ==============================================================================
 raastSimulatorFrontend:
   enabled: false
   replicas: 1
-
   image:
     repository: devopstps/raast-frontend
     tag: "v0.0.19"
     pullPolicy: IfNotPresent
-
   serviceAccount:
     create: true
     name: ""
     automountServiceAccountToken: true
     annotations: {}
     labels: {}
-
   podSecurityContext: {}
   nodeSelector: {}
   tolerations: []
@@ -2322,14 +2071,12 @@ raastSimulatorFrontend:
   extraEnvFrom: []
   extraVolumes: []
   extraVolumeMounts: []
-
   service:
     type: ClusterIP
     ports:
       - name: http
         port: 3000
         targetPort: 3000
-
   resources:
     requests:
       memory: "128Mi"
@@ -2337,7 +2084,6 @@ raastSimulatorFrontend:
     limits:
       memory: "256Mi"
       cpu: "200m"
-
   config:
     APG_PORT: "9001"
     BPS_PORT: "8093"
@@ -2359,38 +2105,32 @@ raastSimulatorFrontend:
     UI_PORT: "10016"
     VITE_API_URL: *raastBackendUrl
     VITE_APP_NAME: RAAST Frontend
-
 # ==============================================================================
 # RAAST BATCH WORKFLOW - PACS008
 # ==============================================================================
 raastBatchWorkflowPacs:
   enabled: false
-  nameOverride: ""  # generated: <release>-raast-batch-pacs
+  nameOverride: "" # generated: <release>-raast-batch-pacs
   replicas: 1
-
   image:
     repository: devopstps/raast-batch-workflows-pacs008
     tag: "v0.0.16.1-beta"
     pullPolicy: IfNotPresent
-
   serviceAccount:
     create: true
     name: ""
     automountServiceAccountToken: true
     annotations: {}
     labels: {}
-
   # service:
   #   type: ClusterIP
   #   port: 8383
-  
   service:
     type: ClusterIP
     ports:
       - name: http
         port: 8383
         targetPort: 8383
-
   dapr:
     enabled: true
     appId: "raast-batch-workflows-pacs"
@@ -2399,7 +2139,6 @@ raastBatchWorkflowPacs:
     enableAppHealthCheck: false
     healthCheckPath: "/actuator/health"
     healthCheckInterval: "30s"
-
   resources:
     requests:
       memory: "256Mi"
@@ -2407,14 +2146,12 @@ raastBatchWorkflowPacs:
     limits:
       memory: "512Mi"
       cpu: "500m"
-
   autoscaling:
     enabled: true
     minReplicas: 1
     maxReplicas: 3
     targetCPUUtilizationPercentage: 75
     targetMemoryUtilizationPercentage: 80
-
   # Synced from: raast-batch-workflows-pacs-config ConfigMap
   config:
     APP_LOG_LEVEL: DEBUG
@@ -2500,7 +2237,7 @@ raastBatchWorkflowPacs:
     SERVICE_VERSION: 0.0.1-SNAPSHOT
     TEMPO_GRPC_PORT: "9095"
     TEMPO_HTTP_PORT: "3200"
-  # TEMPORAL_ADDRESS: temporal-frontend.platformx-infra.svc.cluster.local:7233  # rendered via template helper
+    # TEMPORAL_ADDRESS: temporal-frontend.platformx-infra.svc.cluster.local:7233  # rendered via template helper
     TEMPORAL_HOST: *temporalHost
     TEMPORAL_LOG_LEVEL: INFO
     TEMPORAL_NAMESPACE: default
@@ -2510,27 +2247,23 @@ raastBatchWorkflowPacs:
     TRANSFORMATION_SERVICE_GRPC_HOST: *msgTransformGrpc
     VITE_API_URL: "http://{{ include \"sparrowx.raastSimulatorBackend.name\" . }}.{{ .Release.Namespace }}.svc.cluster.local:7002"
     ZIPKIN_ENDPOINT: *zipkinEndpoint
-
 # ==============================================================================
 # RAAST BATCH WORKFLOW - PREVALIDATION
 # ==============================================================================
 raastBatchWorkflowPrevalidation:
   enabled: false
-  nameOverride: ""  # generated: <release>-raast-batch-prevalidation
+  nameOverride: "" # generated: <release>-raast-batch-prevalidation
   replicas: 1
-
   image:
     repository: devopstps/raast-batch-workflows-prevalidation
     tag: "v0.0.16.1-beta"
     pullPolicy: IfNotPresent
-
   serviceAccount:
     create: true
     name: ""
     automountServiceAccountToken: true
     annotations: {}
     labels: {}
-
   containerSecurityContext:
     allowPrivilegeEscalation: false
     readOnlyRootFilesystem: false
@@ -2538,14 +2271,12 @@ raastBatchWorkflowPrevalidation:
     runAsUser: 0
     capabilities:
       drop: []
-  
   service:
     type: ClusterIP
     ports:
       - name: http
         port: 8282
         targetPort: 8282
-
   dapr:
     enabled: true
     appId: "prevalidation-receiving-app"
@@ -2554,7 +2285,6 @@ raastBatchWorkflowPrevalidation:
     enableAppHealthCheck: false
     healthCheckPath: "/actuator/health"
     healthCheckInterval: "30s"
-
   resources:
     requests:
       memory: "256Mi"
@@ -2562,14 +2292,12 @@ raastBatchWorkflowPrevalidation:
     limits:
       memory: "512Mi"
       cpu: "500m"
-
   autoscaling:
     enabled: true
     minReplicas: 1
     maxReplicas: 3
     targetCPUUtilizationPercentage: 75
     targetMemoryUtilizationPercentage: 80
-
   # Synced from: raast-batch-workflow-prevalidation-config ConfigMap
   config:
     AD_KEYCLOAK_CLIENT_ID: platform-x
@@ -2656,35 +2384,31 @@ raastBatchWorkflowPrevalidation:
     SERVICE_VERSION: 0.0.1-SNAPSHOT
     TEMPO_GRPC_PORT: "9095"
     TEMPO_HTTP_PORT: "3200"
-  # TEMPORAL_ADDRESS: temporal-frontend.platformx-infra.svc.cluster.local:7233  # rendered via template helper
+    # TEMPORAL_ADDRESS: temporal-frontend.platformx-infra.svc.cluster.local:7233  # rendered via template helper
     TEMPORAL_LOG_LEVEL: INFO
     TEMPORAL_NAMESPACE: default
     TEMPORAL_PORT: "7233"
-  # TEMPORAL_SERVICE_URL: temporal-frontend.platformx-infra.svc.cluster.local:7233  # rendered via template helper
+    # TEMPORAL_SERVICE_URL: temporal-frontend.platformx-infra.svc.cluster.local:7233  # rendered via template helper
     TEMPORAL_TASK_QUEUE: prevalidation-receiving-queue
     TEMPORAL_UI_PORT: "8080"
     TRANSFORMATION_SERVICE_GRPC_HOST: *msgTransformGrpc
-
 # ==============================================================================
 # PLATFORM SERVICE BATCH
 # ==============================================================================
 platformBatch:
   enabled: true
-  nameOverride: ""  # generated: <release>-platform-batch
+  nameOverride: "" # generated: <release>-platform-batch
   replicas: 1
-
   image:
     repository: devopstps/platform-service-batch
     tag: "M-0.0.1"
     pullPolicy: IfNotPresent
-
   serviceAccount:
     create: true
     name: ""
     automountServiceAccountToken: true
     annotations: {}
     labels: {}
-
   podSecurityContext: {}
   containerSecurityContext:
     allowPrivilegeEscalation: false
@@ -2693,7 +2417,6 @@ platformBatch:
     runAsUser: 0
     capabilities:
       drop: []
-
   service:
     type: ClusterIP
     ports:
@@ -2703,7 +2426,6 @@ platformBatch:
       - name: metrics
         port: 9090
         targetPort: 9090
-
   dapr:
     enabled: true
     appId: *platformBatchAppId
@@ -2715,7 +2437,6 @@ platformBatch:
     enableAppHealthCheck: true
     healthCheckPath: "/actuator/health"
     healthCheckInterval: "30s"
-
   resources:
     requests:
       memory: "512Mi"
@@ -2723,20 +2444,16 @@ platformBatch:
     limits:
       memory: "1Gi"
       cpu: "1000m"
-
   autoscaling:
     enabled: true
     minReplicas: 1
     maxReplicas: 3
     targetCPUUtilizationPercentage: 75
     targetMemoryUtilizationPercentage: 80
-
   pdb:
     enabled: false
     minAvailable: 1
-
   nodeSelector: {}
-
   # Synced from: platform-service-batch-config ConfigMap
   config:
     API_DESCRIPTION: Create Batch API
@@ -2775,39 +2492,30 @@ platformBatch:
     IDMP_TTL_SECONDS: "86400"
     LOG_LEVEL_APP: DEBUG
     LOGGING_LEVEL_GLOBAL: DEBUG
-   
     OTEL_RESOURCE_ATTRIBUTES: service.name=platform-service-batch,service.version=0.0.1-SNAPSHOT
     OTEL_SERVICE_NAME: *platformBatchAppId
-  
     REST_CLIENT_CONNECT_TIMEOUT: "5000"
     REST_CLIENT_READ_TIMEOUT: "10000"
     SERVER_BASE_PATH: ""
-
-
 # ==============================================================================
 # NOTIFICATION GATEWAY
 # ==============================================================================
 notificationGateway:
   enabled: true
-  nameOverride: ""  # generated: <release>-notification-gateway
+  nameOverride: "" # generated: <release>-notification-gateway
   replicas: 1
-
   image:
     repository: devopstps/platform-service-notification-gateway
     tag: "M-0.0.1"
     pullPolicy: IfNotPresent
-
   serviceAccount:
     create: true
     name: ""
     automountServiceAccountToken: true
     annotations: {}
     labels: {}
-
   podSecurityContext: {}
-
   containerSecurityContext: {}
-
   service:
     type: ClusterIP
     ports:
@@ -2817,7 +2525,6 @@ notificationGateway:
       - name: metrics
         port: 9094
         targetPort: 9094
-
   dapr:
     enabled: true
     appId: "platform-service-notification-gateway"
@@ -2829,7 +2536,6 @@ notificationGateway:
     enableAppHealthCheck: true
     healthCheckPath: "/healthz"
     healthCheckInterval: "30s"
-
   resources:
     requests:
       memory: "512Mi"
@@ -2837,20 +2543,16 @@ notificationGateway:
     limits:
       memory: "1Gi"
       cpu: "1000m"
-
   autoscaling:
     enabled: true
     minReplicas: 1
     maxReplicas: 3
     targetCPUUtilizationPercentage: 75
     targetMemoryUtilizationPercentage: 80
-
   pdb:
     enabled: false
     minAvailable: 1
-
   nodeSelector: {}
-
   ingress:
     enabled: false
     healthcheckPath: "/healthz"
@@ -2863,7 +2565,6 @@ notificationGateway:
       - secretName: notification-gateway-tls
         hosts:
           - "notificationgateway.tpsonline.com"
-
   route:
     enabled: true
     hosts:
@@ -2871,7 +2572,6 @@ notificationGateway:
     tls:
       insecureEdgeTerminationPolicy: "Redirect"
       tlsTermination: "edge"
-
   # Synced from: notificationgateway-config ConfigMap
   config:
     ASPNETCORE_ENVIRONMENT: Development
@@ -2894,7 +2594,7 @@ notificationGateway:
     NOTIFICATION_GATEWAY_OBSERVABILITY_ENABLE_METRICS: "true"
     NOTIFICATION_GATEWAY_OBSERVABILITY_ENABLE_TRACING: "true"
     NOTIFICATION_GATEWAY_POSTGRESQL_CONNECTION_STRING_NAME: notificationgateway/postgresql-connectionstring
-  # NOTIFICATION_GATEWAY_POSTGRESQL_CONNECTION_STRING_NAME_value: Host=postgresql.platformx-infra.svc.cluster.local;Port=5432;Username=postgres;Password=postgres;Database=platformdb  # rendered via template helper
+    # NOTIFICATION_GATEWAY_POSTGRESQL_CONNECTION_STRING_NAME_value: Host=postgresql.platformx-infra.svc.cluster.local;Port=5432;Username=postgres;Password=postgres;Database=platformdb  # rendered via template helper
     NOTIFICATION_GATEWAY_PUBSUB_NAME: *daprPubsubName
     NOTIFICATION_GATEWAY_RETRY_STATE_KEY_PREFIX: notification-retry-
     NOTIFICATION_GATEWAY_SECRET_STORE_NAME: *daprSecretStore
@@ -2912,32 +2612,27 @@ notificationGateway:
     Secrets__PostgresqlConnectionStringName: notificationgateway/postgresql-connectionstring
     TopicSubscriptions__NotificationTypeFilter: ""
     TopicSubscriptions__Topics__0: notification-transactions
-
   secrets:
     novuBaseUrl: aHR0cDovL25vdnUtYXBpLnBsYXRmb3JteC1pbmZyYS5zdmMuY2x1c3Rlci5sb2NhbDozMDAx
     novuSecretKey: MnRhMTY5MjZkNDkxN2Q5OTc3MTE4ZWMxZTI0MzM1Y2IK
     postgresqlConnectionString: SG9zdD1wb3N0Z3JlcztQb3J0PTU0MzI7RGF0YWJhc2U9bm90aWZpY2F0aW9uZ2F0ZXdheWRiO1VzZXJuYW1lPXVzZXJuYW1lO1Bhc3N3b3JkPXBhc3N3b3Jk
-
 # ==============================================================================
 # PLATFORM DOCUMENTATION
 # ==============================================================================
 platformDocs:
   enabled: true
-  nameOverride: ""  # generated: <release>-platform-docs
+  nameOverride: "" # generated: <release>-platform-docs
   replicas: 1
-
   image:
     repository: devopstps/platform-documentation
     tag: "release-f72b99e37609274ea19bf41540c1ad90165a9c9b"
     pullPolicy: IfNotPresent
-
   serviceAccount:
     create: true
     name: ""
     automountServiceAccountToken: true
     annotations: {}
     labels: {}
-
   podSecurityContext: {}
   containerSecurityContext:
     allowPrivilegeEscalation: false
@@ -2946,14 +2641,12 @@ platformDocs:
     runAsUser: 0
     capabilities:
       drop: []
-  
   service:
     type: ClusterIP
     ports:
       - name: http
         port: 8080
         targetPort: 8080
-
   dapr:
     enabled: true
     appId: "platform-documentation"
@@ -2962,7 +2655,6 @@ platformDocs:
     enableAppHealthCheck: false
     healthCheckPath: "/"
     healthCheckInterval: "30s"
-
   resources:
     requests:
       memory: "128Mi"
@@ -2970,20 +2662,16 @@ platformDocs:
     limits:
       memory: "256Mi"
       cpu: "200m"
-
   autoscaling:
     enabled: true
     minReplicas: 1
     maxReplicas: 2
     targetCPUUtilizationPercentage: 75
     targetMemoryUtilizationPercentage: 80
-
   pdb:
     enabled: false
     minAvailable: 1
-
   nodeSelector: {}
-
   ingress:
     enabled: true
     healthcheckPath: "/"
@@ -2996,7 +2684,6 @@ platformDocs:
       - secretName: tpsplatform-tls
         hosts:
           - "platformx-docs.tpsonline.com"
-
   route:
     enabled: false
     hosts:
@@ -3004,12 +2691,10 @@ platformDocs:
     tls:
       insecureEdgeTerminationPolicy: "Redirect"
       tlsTermination: "edge"
-
   # Synced from: platform-documentation-config ConfigMap
   config:
     DOCS_PORT: "3000"
     NODE_ENV: "production"
-
 # ==============================================================================
 # CAS TITLEFETCH RECEIVING WORKER
 # ==============================================================================
@@ -3017,21 +2702,16 @@ casTitlefetchReceiving:
   enabled: true
   nameOverride: ""
   replicas: 1
-
   image:
     repository: devopstps/cas-titlefetch-receiving
     tag: "v2.3.4"
     pullPolicy: IfNotPresent
-
   serviceAccount:
     create: true
     name: ""
     automountServiceAccountToken: true
     annotations: {}
     labels: {}
-
-
-
   service:
     type: ClusterIP
     ports:
@@ -3041,18 +2721,15 @@ casTitlefetchReceiving:
       - name: metrics
         port: 9889
         targetPort: 9889
-
   dapr:
     enabled: true
     appId: "cas-titlefetch-receiving"
     metricsPort: "9090"
-
   reloaderAuto: true
   temporal:
     workerMetrics: true
     workerType: p2p-sending
     taskQueue: *p2pSendingQueue
-
   resources:
     requests:
       memory: "256Mi"
@@ -3060,34 +2737,29 @@ casTitlefetchReceiving:
     limits:
       memory: "512Mi"
       cpu: "500m"
-
   autoscaling:
     enabled: true
     minReplicas: 1
     maxReplicas: 4
     targetCPUUtilizationPercentage: 75
     targetMemoryUtilizationPercentage: 80
-
 # ==============================================================================
 # USER MANAGEMENT AUTH SERVICE
 # ==============================================================================
 userManagement:
   enabled: true
-  nameOverride: ""  # generated: <release>-userManagement
+  nameOverride: "" # generated: <release>-userManagement
   replicas: 1
-
   image:
     repository: devopstps/platform-service-user-management
     tag: "M-0.0.1"
     pullPolicy: IfNotPresent
-
   serviceAccount:
     create: true
     name: ""
     automountServiceAccountToken: true
     annotations: {}
     labels: {}
-  
   postgres:
     name: postgres
     namespace: platformx-infra
@@ -3100,16 +2772,13 @@ userManagement:
       username: postgres
       password: postgres
       dbschema: usermanagement
-
   service:
     type: ClusterIP
     ports:
       - name: http
         port: 5000
         targetPort: 5000
-
   nodeSelector: {}
-
   config:
     APPLICATION_NAME: user-management
     ASPNETCORE_ENVIRONMENT: Development
@@ -3162,7 +2831,6 @@ userManagement:
     Urls: http://0.0.0.0:5000
     UserSync__EnableBackgroundSync: "false"
     UserSync__IntervalMinutes: "10"
-
   ingress:
     enabled: false
     healthcheckPath: "/health"
@@ -3175,7 +2843,6 @@ userManagement:
       - secretName: tpsplatform-tls
         hosts:
           - usermanagement.tpsonline.com
-
   route:
     enabled: true
     hosts:
@@ -3183,7 +2850,6 @@ userManagement:
     tls:
       insecureEdgeTerminationPolicy: "Redirect"
       tlsTermination: "edge"
-
 # ==============================================================================
 # HOST SERVICE SINDH BANK
 # ==============================================================================
@@ -3195,7 +2861,6 @@ hostServiceSindhBank:
     repository: devopstps/host-service-sindh-bank
     tag: "v0.0.9"
     pullPolicy: IfNotPresent
-
   service:
     type: ClusterIP
     ports:
@@ -3259,7 +2924,6 @@ hostServiceSindhBank:
     OTEL_RESOURCE_ATTRIBUTES: deployment.environment=production
     OTEL_SERVICE_NAME: host-service
     SERVER_PORT: "8080"
-
 # ==============================================================================
 # SINDH BANK HOST SIMULATOR
 # ==============================================================================
@@ -3301,23 +2965,19 @@ sindhBankHostSimulator:
     targetMemoryUtilizationPercentage: 80
   nodeSelector: {}
   podSecurityContext: {}
-
   # Synced from: sindh-bank-host-simulator-config ConfigMap
   config:
     SERVER_PORT: "9999"
-
 # ==============================================================================
 # RAAST COMMS INRT
 # ==============================================================================
 raastCommsInrt:
   enabled: false
   replicas: 0
-
   image:
     repository: devopstps/raast-comms
     tag: "2.3.6"
     pullPolicy: IfNotPresent
-
   service:
     type: ClusterIP
     ports:
@@ -3327,7 +2987,6 @@ raastCommsInrt:
       - name: http
         port: 3500
         targetPort: 3500
-
   dapr:
     enabled: true
     appId: "raast-comms-inrt"
@@ -3337,7 +2996,6 @@ raastCommsInrt:
     enableAppHealthCheck: true
     healthCheckPath: "/actuator/health"
     healthCheckInterval: "30s"
-
   resources:
     requests:
       memory: "512Mi"
@@ -3345,17 +3003,14 @@ raastCommsInrt:
     limits:
       memory: "1Gi"
       cpu: "1000m"
-
   autoscaling:
     enabled: true
     minReplicas: 1
     maxReplicas: 3
     targetCPUUtilizationPercentage: 75
     targetMemoryUtilizationPercentage: 80
-
   nodeSelector: {}
   podSecurityContext: {}
-
   # Synced from: raast-comms-inrt-config ConfigMap
   config:
     CAMEL_LAZY_INIT: "false"
@@ -3410,7 +3065,7 @@ raastCommsInrt:
     TEMPORAL_NAMESPACE: default
     TEMPORAL_P2P_RECEIVING_TASK_QUEUE: *p2pReceivingQueue
     TEMPORAL_P2P_SENDING_TASK_QUEUE: *p2pSendingQueue
-  # TEMPORAL_SERVICE_URL: temporal-frontend.platformx-infra.svc.cluster.local:7233  # rendered via template helper
+    # TEMPORAL_SERVICE_URL: temporal-frontend.platformx-infra.svc.cluster.local:7233  # rendered via template helper
     TEMPORAL_TASK_QUEUE: *p2pSendingQueue
     TIMER_PERIOD: "1000"
     TOKEN_BROKER_CLIENT_TOKEN: *casClientToken
@@ -3420,34 +3075,28 @@ raastCommsInrt:
     TRACING_SAMPLING_RATE: "0.1"
     REST_SERVER_PORT: "8191"
     REST_SERVER_HOST: "0.0.0.0"
-
 # ==============================================================================
 # P2P HOST WORKER
 # ==============================================================================
 p2pHostWorker:
   enabled: true
   replicas: 1
-
   image:
     repository: devopstps/raast-workflows-p2p-host-worker
     tag: "v2.3.4"
     pullPolicy: IfNotPresent
-
   workerName: "p2phostworker"
   sharedConfigMapName: "raast-worker-env"
   sharedSecretName: "raast-worker-secret"
   prometheusPort: "9889"
-
   dapr:
     enabled: true
     appId: "raast-workflows"
     metricsPort: "9090"
-
   temporal:
     taskQueue: "host-task-queue"
     workerMetrics: "true"
     workerType: "p2p-sending"
-
   resources:
     requests:
       memory: "256Mi"
@@ -3455,20 +3104,17 @@ p2pHostWorker:
     limits:
       memory: "512Mi"
       cpu: "500m"
-
   autoscaling:
     enabled: true
     minReplicas: 1
     maxReplicas: 4
     targetCPUUtilizationPercentage: 75
     targetMemoryUtilizationPercentage: 80
-
   pdb:
     enabled: false
     minAvailable: 1
   nodeSelector: {}
   podSecurityContext: {}
-
   secrets:
     redisPassword: Y21Wa2FYTlRaV04xY21WUVlYTnpkMjl5WkRFeU13PT0=
   # Synced from: raast-worker-env ConfigMap
@@ -3522,43 +3168,37 @@ p2pHostWorker:
     STICKY_QUEUE_TIMEOUT: 5s
     TARGET_CPU_USAGE: "0.85"
     TARGET_MEMORY_USAGE: "0.8"
-  # TEMPORAL_ADDRESS: temporal-frontend.platformx-infra.svc.cluster.local:7233  # rendered via template helper
+    # TEMPORAL_ADDRESS: temporal-frontend.platformx-infra.svc.cluster.local:7233  # rendered via template helper
     TEMPORAL_METRICS_BIND_ADDRESS: 0.0.0.0:9889
     TEMPORAL_METRICS_PORT: 9889
     TEMPORAL_NAMESPACE: default
     TRANSFORMATION_SERVICE_GRPC_HOST: *msgTransformGrpc
     WORKER_IDENTITY: p2psendingworker
     WORKFLOW_THREAD_POOL_SIZE: "2"
-
 # ==============================================================================
 # P2P RECEIVING WORKER
 # ==============================================================================
 p2pReceivingWorker:
   enabled: true
-  nameOverride: ""  # generated: <release>-raast-p2p-receiving-workflow
+  nameOverride: "" # generated: <release>-raast-p2p-receiving-workflow
   replicas: 1
-
   image:
     repository: devopstps/raast-p2p-receiving-workflow
     tag: "v0.0.14"
     pullPolicy: IfNotPresent
-
   javaOpts: "-Xms256m -Xmx512m"
-
   serviceAccount:
     create: true
     name: ""
     automountServiceAccountToken: true
     annotations: {}
     labels: {}
-
   service:
     type: ClusterIP
     ports:
       - name: http
         port: 8080
         targetPort: 8080
-
   dapr:
     enabled: true
     appId: "raast-p2p-receiving-workflow"
@@ -3570,7 +3210,6 @@ p2pReceivingWorker:
     enableAppHealthCheck: true
     healthCheckPath: "/health"
     healthCheckInterval: "30s"
-
   resources:
     requests:
       memory: "256Mi"
@@ -3578,22 +3217,18 @@ p2pReceivingWorker:
     limits:
       memory: "512Mi"
       cpu: "500m"
-
   autoscaling:
     enabled: true
     minReplicas: 1
     maxReplicas: 4
     targetCPUUtilizationPercentage: 75
     targetMemoryUtilizationPercentage: 80
-
   pdb:
     enabled: false
     minAvailable: 1
-
   nodeSelector: {}
   podSecurityContext: {}
   containerSecurityContext: {}
-
   # Synced from: raast-p2p-receiving-workflow ConfigMap
   config:
     APP_LOG_LEVEL: INFO
@@ -3645,42 +3280,35 @@ p2pReceivingWorker:
     RAAST_COMMS_SERVICE_REQUEST_TIMEOUT: "30"
     SERVER_PORT: "8080"
     SERVICE_VERSION: 0.0.1-SNAPSHOT
-  # TEMPORAL_ADDRESS: temporal-frontend.platformx-infra.svc.cluster.local:7233  # rendered via template helper
+    # TEMPORAL_ADDRESS: temporal-frontend.platformx-infra.svc.cluster.local:7233  # rendered via template helper
     TEMPORAL_LOG_LEVEL: WARN
     TEMPORAL_NAMESPACE: *temporalNamespace
     TEMPORAL_TASK_QUEUE: *p2pReceivingQueue
-
 # ==============================================================================
 # LOOKUP SERVICE
 # ==============================================================================
 lookupService:
   enabled: true
-  nameOverride: ""  # generated: <release>-platform-service-lookup
+  nameOverride: "" # generated: <release>-platform-service-lookup
   replicas: 1
-
   image:
     repository: devopstps/platform-service-lookup
     tag: "Testing-0.0.0"
     pullPolicy: IfNotPresent
-
   serviceAccount:
     create: true
     name: ""
     automountServiceAccountToken: true
     annotations: {}
     labels: {}
-
   podSecurityContext: {}
-
   containerSecurityContext: {}
-
   service:
     type: ClusterIP
     ports:
       - name: http
         port: 5000
         targetPort: 5000
-
   dapr:
     enabled: true
     appId: "platform-service-lookup"
@@ -3690,7 +3318,6 @@ lookupService:
     enableAppHealthCheck: true
     healthCheckPath: "/health"
     healthCheckInterval: "30s"
-
   resources:
     requests:
       memory: "256Mi"
@@ -3698,20 +3325,16 @@ lookupService:
     limits:
       memory: "512Mi"
       cpu: "500m"
-
   autoscaling:
     enabled: true
     minReplicas: 1
     maxReplicas: 3
     targetCPUUtilizationPercentage: 75
     targetMemoryUtilizationPercentage: 80
-
   pdb:
     enabled: false
     minAvailable: 1
-
   nodeSelector: {}
-
   ingress:
     enabled: false
     healthcheckPath: "/health"
@@ -3724,7 +3347,6 @@ lookupService:
       - secretName: tpsplatform-tls
         hosts:
           - "platform-service-lookup.tpsonline.com"
-
   route:
     enabled: true
     hosts:
@@ -3732,7 +3354,6 @@ lookupService:
     tls:
       insecureEdgeTerminationPolicy: "Redirect"
       tlsTermination: "edge"
-
   # Synced from: platform-service-lookup-config ConfigMap
   config:
     ASPNETCORE_ENVIRONMENT: Production
@@ -3753,38 +3374,31 @@ lookupService:
     OTEL_EXPORTER_OTLP_ENDPOINT: *otelGrpcEndpoint
     POSTGRES_CONNECTION_STRING: ""
     SERVICE_NAME: LookupService
-
 # ==============================================================================
 # ERROR MANAGEMENT SERVICE
 # ==============================================================================
 errorManagement:
   enabled: true
-  nameOverride: ""  # generated: <release>-error-management
+  nameOverride: "" # generated: <release>-error-management
   replicas: 1
-
   image:
     repository: devopstps/platform-service-error-management
     tag: "v0.0.0"
     pullPolicy: IfNotPresent
-
   serviceAccount:
     create: true
     name: ""
     automountServiceAccountToken: true
     annotations: {}
     labels: {}
-
   podSecurityContext: {}
-
   containerSecurityContext: {}
-
   service:
     type: ClusterIP
     ports:
       - name: http
         port: 5000
         targetPort: 5000
-
   dapr:
     enabled: true
     appId: "platform-service-error-management"
@@ -3796,7 +3410,6 @@ errorManagement:
     enableAppHealthCheck: true
     healthCheckPath: "/health"
     healthCheckInterval: "30s"
-
   resources:
     requests:
       memory: "256Mi"
@@ -3804,20 +3417,16 @@ errorManagement:
     limits:
       memory: "512Mi"
       cpu: "500m"
-
   autoscaling:
     enabled: false
     minReplicas: 1
     maxReplicas: 3
     targetCPUUtilizationPercentage: 75
     targetMemoryUtilizationPercentage: 80
-
   pdb:
     enabled: false
     minAvailable: 1
-
   nodeSelector: {}
-
   ingress:
     enabled: false
     healthcheckPath: "/"
@@ -3830,7 +3439,6 @@ errorManagement:
       - secretName: tpsplatform-tls
         hosts:
           - "platform-service-error-management.tpsonline.com"
-
   route:
     enabled: false
     hosts:
@@ -3838,12 +3446,11 @@ errorManagement:
     tls:
       insecureEdgeTerminationPolicy: "Redirect"
       tlsTermination: "edge"
-
   # Synced from: platform-service-error-management-config ConfigMap
   config:
     ASPNETCORE_ENVIRONMENT: Production
     ASPNETCORE_URLS: "http://+:5000"
-    AUDIT_EVENTS_SUBSCRIPTION: *auditEventsSub        # anchor: shared.auditEventsSub = "audit-trail-service"
+    AUDIT_EVENTS_SUBSCRIPTION: *auditEventsSub # anchor: shared.auditEventsSub = "audit-trail-service"
     AUDIT_EVENTS_TOPIC: "audit-events"
     DAPR_GRPC_PORT: "50001"
     DAPR_HTTP_PORT: "3500"
@@ -3851,20 +3458,19 @@ errorManagement:
     DAPR_STATE_STORE_NAME: statestore
     DATABASE_COMMAND_TIMEOUT: "30"
     DATABASE_CONNECTION_TIMEOUT: "30"
-    Dapr__SecretStoreName: *daprSecretStore           # anchor: shared.daprSecretStore = "vault-secretstore"
-    Dapr__StateStoreName: *daprStateStore             # anchor: shared.daprStateStore  = "redis-state"
+    Dapr__SecretStoreName: *daprSecretStore # anchor: shared.daprSecretStore = "vault-secretstore"
+    Dapr__StateStoreName: *daprStateStore # anchor: shared.daprStateStore  = "redis-state"
     Database__ConnectionStringSecretKey: postgres-connection-string
-    Database__SecretStoreName: *daprSecretStore       # anchor: shared.daprSecretStore = "vault-secretstore"
+    Database__SecretStoreName: *daprSecretStore # anchor: shared.daprSecretStore = "vault-secretstore"
     ERRORMANAGEMENT_EVENTS_SUBSCRIPTION: error-management-service
     ERRORMANAGEMENT_EVENTS_TOPIC: errormanagement-events
     GITHUB_TOKEN: ""
     GITHUB_USERNAME: ""
-    KEYCLOAK_BASE_URL: *keycloakInternalUrl           # anchor: shared.keycloakInternalUrl
-    OTEL_EXPORTER_OTLP_ENDPOINT: *otelGrpcEndpoint   # anchor: global.observability.otelCollectorGrpcEndpoint
-  # POSTGRES_CONNECTION_STRING rendered via template helper (sparrowx.infra.postgresConnString)
-    PUBSUB_COMPONENT_NAME: *daprPubsubName            # anchor: shared.daprPubsubName = "platformx-pubsub"
+    KEYCLOAK_BASE_URL: *keycloakInternalUrl # anchor: shared.keycloakInternalUrl
+    OTEL_EXPORTER_OTLP_ENDPOINT: *otelGrpcEndpoint # anchor: global.observability.otelCollectorGrpcEndpoint
+    # POSTGRES_CONNECTION_STRING rendered via template helper (sparrowx.infra.postgresConnString)
+    PUBSUB_COMPONENT_NAME: *daprPubsubName # anchor: shared.daprPubsubName = "platformx-pubsub"
     SERVICE_NAME: ErrorManagementService
-
 # ==============================================================================
 # POSTGRES RAAST (local postgres for raast simulator)
 # ==============================================================================
@@ -3875,14 +3481,12 @@ postgresRaast:
     repository: postgres
     tag: "16-alpine"
     pullPolicy: IfNotPresent
-
   service:
     type: ClusterIP
     ports:
       - name: postgres
         port: 5432
         targetPort: 5432
-
   config:
     user: "postgres"
     password: "postgres"
@@ -3891,7 +3495,7 @@ postgresRaast:
   persistence:
     enabled: true
     claimName: data-raast
-    storageClass: ""  # Empty uses cluster default. Override: gp2 (AWS), gp3-csi (OpenShift), managed-premium (AKS)
+    storageClass: "" # Empty uses cluster default. Override: gp2 (AWS), gp3-csi (OpenShift), managed-premium (AKS)
     accessMode: ReadWriteOnce
     size: 10Gi
   resources:
@@ -3902,7 +3506,6 @@ postgresRaast:
       memory: "512Mi"
       cpu: "500m"
   nodeSelector: {}
-
 # ==============================================================================
 # REDIS RAAST (local redis for raast simulator)
 # ==============================================================================
@@ -3916,7 +3519,7 @@ redisRaast:
   persistence:
     enabled: true
     claimName: raast-data
-    storageClass: ""  # Empty uses cluster default. Override: gp2 (AWS), gp3-csi (OpenShift), managed-premium (AKS)
+    storageClass: "" # Empty uses cluster default. Override: gp2 (AWS), gp3-csi (OpenShift), managed-premium (AKS)
     accessMode: ReadWriteOnce
     size: 5Gi
   service:
@@ -3933,3 +3536,6 @@ redisRaast:
       memory: "256Mi"
       cpu: "200m"
   nodeSelector: {}
+channelServiceService:
+  service:
+    port: 9090
