@@ -1317,7 +1317,7 @@ auditTrail:
   dapr:
     enabled: true
     appId: "platform-service-audit-trail"
-    appPort: "5000"
+    appPort: 444234
     appProtocol: "http"
     httpPort: "3500"
     grpcPort: "50001"
@@ -1326,6 +1326,7 @@ auditTrail:
     healthCheckPath: "/health"
     healthCheckInterval: "30s"
 
+    environment: qaw
   resources:
     requests:
       memory: "512Mi"
