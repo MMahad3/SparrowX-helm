@@ -561,6 +561,7 @@ channelService:
     SSL_REDIRECT_TO_HTTPS: "false"
     SWAGGER__SERVERURL: /channel
 
+  config.DAPR_GRPC_PORT: 123123
 # ==============================================================================
 # MESSAGE STORE
 # ==============================================================================
