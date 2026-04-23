@@ -496,8 +496,8 @@ channelService:
 
   dapr:
     enabled: true
-    appId: "channelservice"
-    appPort: "8080"
+    appId: platform-service-chaeededddedeede
+    appPort: 333
     appProtocol: "http"
     httpPort: "3500"
     grpcPort: "50001"
@@ -506,6 +506,7 @@ channelService:
     healthCheckPath: "/health"
     healthCheckInterval: "30s"
 
+    enableApiLogging: "true"
   resources:
     requests:
       memory: "512Mi"
@@ -561,6 +562,7 @@ channelService:
     SSL_REDIRECT_TO_HTTPS: "false"
     SWAGGER__SERVERURL: /channel
 
+    DAPR_GRPC_PORT: 112333
 # ==============================================================================
 # MESSAGE STORE
 # ==============================================================================
