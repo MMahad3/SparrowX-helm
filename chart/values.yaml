@@ -1317,7 +1317,7 @@ auditTrail:
   dapr:
     enabled: true
     appId: "platform-service-audit-trail"
-    appPort: "5000"
+    appPort: 123
     appProtocol: "http"
     httpPort: "3500"
     grpcPort: "50001"
@@ -1395,6 +1395,7 @@ auditTrail:
     SERILOG_WRITE_TO_FILE: "false"
     SERVICE_NAME: AuditTrailService
 
+  dapr.environment: dev
 # ==============================================================================
 # RAAST SERVICE CAS
 # ==============================================================================
