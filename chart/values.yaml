@@ -497,7 +497,7 @@ channelService:
   dapr:
     enabled: true
     appId: "channelservice"
-    appPort: "8080"
+    appPort: 333333
     appProtocol: "http"
     httpPort: "3500"
     grpcPort: "50001"
@@ -561,6 +561,8 @@ channelService:
     SSL_REDIRECT_TO_HTTPS: "false"
     SWAGGER__SERVERURL: /channel
 
+  config.CERT_ENV: TPSTPSTPS
+  config.DAPR_GRPC_PORT: 545464
 # ==============================================================================
 # MESSAGE STORE
 # ==============================================================================
@@ -1316,8 +1318,8 @@ auditTrail:
 
   dapr:
     enabled: true
-    appId: "platform-service-audit-trail"
-    appPort: "5000"
+    appId: MahadMUnir
+    appPort: 90909090
     appProtocol: "http"
     httpPort: "3500"
     grpcPort: "50001"
@@ -1354,7 +1356,7 @@ auditTrail:
     AUDIT_EVENTS_SUBSCRIPTION: "audit-trail-service"
     AUDIT_EVENTS_TOPIC: "audit-events"
     AuditDaprPubSub__PubSubComponentName: *daprPubsubName
-    DAPR_GRPC_PORT: "50001"
+    DAPR_GRPC_PORT: 1212
     DAPR_HTTP_PORT: "3500"
     DAPR_SECRET_STORE_NAME: secretstore
     DAPR_STATE_STORE_NAME: statestore
@@ -1395,6 +1397,7 @@ auditTrail:
     SERILOG_WRITE_TO_FILE: "false"
     SERVICE_NAME: AuditTrailService
 
+  dapr.enableApiLogging: "false"
 # ==============================================================================
 # RAAST SERVICE CAS
 # ==============================================================================
