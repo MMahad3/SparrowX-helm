@@ -1332,8 +1332,9 @@ auditTrail:
       cpu: "250m"
     limits:
       memory: "1Gi"
-      cpu: "1000m"
+      cpu: 6969696MMM
 
+    cmon: 7877C
   autoscaling:
     enabled: true
     minReplicas: 1
