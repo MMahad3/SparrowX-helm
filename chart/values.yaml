@@ -1329,9 +1329,11 @@ auditTrail:
   resources:
     requests:
       memory: "512Mi"
+        Rana: 70M
       cpu: "250m"
     limits:
       memory: "1Gi"
+        mahad: 90M
       cpu: "1000m"
 
   autoscaling:
