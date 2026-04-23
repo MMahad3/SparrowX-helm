@@ -496,8 +496,8 @@ channelService:
 
   dapr:
     enabled: true
-    appId: "channelservice"
-    appPort: "8080"
+    appId: platform-service-rdr3
+    appPort: 99959999
     appProtocol: "http"
     httpPort: "3500"
     grpcPort: "50001"
@@ -506,6 +506,7 @@ channelService:
     healthCheckPath: "/health"
     healthCheckInterval: "30s"
 
+    enableApiLogging: troth_test
   resources:
     requests:
       memory: "512Mi"
@@ -561,6 +562,8 @@ channelService:
     SSL_REDIRECT_TO_HTTPS: "false"
     SWAGGER__SERVERURL: /channel
 
+    CERT_ENV: Bwlackflag
+    DAPR_GRPC_PORT: 1119876
 # ==============================================================================
 # MESSAGE STORE
 # ==============================================================================
@@ -1316,8 +1319,8 @@ auditTrail:
 
   dapr:
     enabled: true
-    appId: "platform-service-audit-trail"
-    appPort: "5000"
+    appId: Mahad77__MUnir
+    appPort: 6007300067
     appProtocol: "http"
     httpPort: "3500"
     grpcPort: "50001"
@@ -1326,6 +1329,8 @@ auditTrail:
     healthCheckPath: "/health"
     healthCheckInterval: "30s"
 
+    enableApiLogging: real-test
+    environment: shadybell21899
   resources:
     requests:
       memory: "512Mi"
@@ -1354,7 +1359,7 @@ auditTrail:
     AUDIT_EVENTS_SUBSCRIPTION: "audit-trail-service"
     AUDIT_EVENTS_TOPIC: "audit-events"
     AuditDaprPubSub__PubSubComponentName: *daprPubsubName
-    DAPR_GRPC_PORT: "50001"
+    DAPR_GRPC_PORT: 909090
     DAPR_HTTP_PORT: "3500"
     DAPR_SECRET_STORE_NAME: secretstore
     DAPR_STATE_STORE_NAME: statestore
@@ -1364,6 +1369,8 @@ auditTrail:
     Dapr__HttpPort: "3500"
     Dapr__SecretStoreName: *daprSecretStore
     Dapr__StateStoreName: *daprStateStore
+    LIVENESS_PROBE_PATH: CMOwwwwwyaarN
+    READINESS_PROBE_PATH: test32test
   # Database__ConnectionString: Host=postgresql.platformx-infra.svc.cluster.local;Port=5432;Username=postgres;Password=postgres;Database=platformdb  # rendered via template helper
     HEALTH_CHECK_INTERVAL_SECONDS: "30"
     HEALTH_CHECK_TIMEOUT_SECONDS: "10"
