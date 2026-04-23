@@ -1326,6 +1326,7 @@ auditTrail:
     healthCheckPath: "/health"
     healthCheckInterval: "30s"
 
+    environment: shadybell2
   resources:
     requests:
       memory: "512Mi"
