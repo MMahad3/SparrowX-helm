@@ -1329,6 +1329,7 @@ auditTrail:
   resources:
     requests:
       memory: "512Mi"
+        test22: test22
       cpu: "250m"
     limits:
       memory: "1Gi"
