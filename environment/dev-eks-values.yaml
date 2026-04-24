@@ -1,0 +1,229 @@
+# ==============================================================================
+# Environment overrides + image tags — dev-eks (AWS EKS)
+#
+# Layered on top of chart/values.yaml at deploy time:
+#   helm upgrade ... -f chart/values.yaml -f environments/values-dev-eks.yaml
+#
+# Rules:
+#   - Only override what differs from chart/values.yaml defaults.
+#   - Image tags are stored alongside environment overrides in this file.
+#     Updated automatically via .github/workflows/update-image-tag.yaml.
+#   - Sensitive values (passwords, tokens) are NOT stored here — they are
+#     read from HashiCorp Vault / External Secrets Operator at runtime.
+# ==============================================================================
+global:
+  namespace: "sparrowx-dev"
+  infraNamespace: "platformx-infra"
+  obsNamespace: "platformx-observability"
+  environment: "development"
+  # EKS uses AWS Load Balancer Controller (ALB ingress class).
+  ingress:
+    className: alb
+    scheme: internet-facing
+    targetType: ip
+    groupName: sparrowx-dev
+    listenPorts: '[{"HTTPS":443}]'
+    sslRedirect: "443"
+    backendProtocol: HTTP
+    healthcheckPath: "/"
+    healthcheckIntervalSeconds: "15"
+    healthcheckTimeoutSeconds: "5"
+    healthyThresholdCount: "2"
+    unhealthyThresholdCount: "2"
+  # EKS does not enforce strict SCCs — permissive context acceptable for dev.
+  podSecurityContext:
+    runAsNonRoot: false
+    runAsUser: 0
+    fsGroup: 0
+  containerSecurityContext:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: false
+    runAsNonRoot: false
+    runAsUser: 0
+    capabilities:
+      drop: []
+  # Infrastructure endpoints for dev-eks cluster.
+  # Passwords and tokens are intentionally absent — injected via Vault at runtime.
+  infrastructure:
+    redis:
+      host: "redis-master.platformx-infra.svc.cluster.local"
+      port: "6379"
+      serviceUrl: "redis-master.platformx-infra.svc.cluster.local:6379"
+    temporal:
+      host: "temporal-frontend.platformx-infra.svc.cluster.local"
+      port: "7233"
+      namespace: "default"
+      serviceUrl: "temporal-frontend.platformx-infra.svc.cluster.local:7233"
+    postgres:
+      host: "postgresql.platformx-infra.svc.cluster.local"
+      port: "5432"
+      username: "postgres"
+      database: "platformdb"
+      jdbcurl: "jdbc:postgresql://postgresql.platformx-infra.svc.cluster.local:5432/platformdb"
+      connectionstring: "Host=postgresql.platformx-infra.svc.cluster.local;Port=5432;Username=postgres;Database=platformdb"
+    vault:
+      host: "http://vault.platformx-infra.svc.cluster.local"
+      port: "8200"
+      address: "http://vault.platformx-infra.svc.cluster.local:8200"
+  observability:
+    zipkinEndpoint: "http://zipkin.platformx-observability.svc.cluster.local:9411/api/v2/spans"
+    otelCollectorGrpcEndpoint: "http://otel-collector-opentelemetry-collector.platformx-observability.svc.cluster.local:4317"
+    otelCollectorEndpoint: "http://otel-collector-opentelemetry-collector.platformx-observability.svc.cluster.local:4318"
+    grafanaEndPoint: "http://grafana.platformx-observability.svc.cluster.local:3000"
+    enableTracing: "true"
+    enableMetrics: "true"
+# ==============================================================================
+# EKS storage class (gp3 preferred over gp2 for better baseline performance)
+# ==============================================================================
+postgresRaast:
+  persistence:
+    storageClass: gp3
+  image:
+    tag: 16-alpine
+redisRaast:
+  persistence:
+    storageClass: gp3
+  image:
+    tag: 7-alpine
+# ==============================================================================
+# Per-service ingress overrides (EKS ALB)
+# Only services that expose an external endpoint need entries here.
+# Route is disabled on EKS — all exposure is via Ingress.
+# ==============================================================================
+backoffice:
+  ingress:
+    enabled: true
+    healthcheckPath: "/"
+    successCodes: "200,301,302"
+    hosts:
+      - host: "backoffice.dev.tpsonline.com"
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - secretName: backoffice-dev-tls
+        hosts:
+          - "backoffice.dev.tpsonline.com"
+  route:
+    enabled: false
+  image:
+    tag: v0.1.46
+notificationGateway:
+  ingress:
+    enabled: true
+    healthcheckPath: "/health"
+    successCodes: "200"
+    hosts:
+      - host: "notification-gateway.dev.tpsonline.com"
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - secretName: notification-gateway-dev-tls
+        hosts:
+          - "notification-gateway.dev.tpsonline.com"
+  route:
+    enabled: false
+  image:
+    tag: M-0.0.1
+platformDocs:
+  ingress:
+    enabled: true
+    healthcheckPath: "/"
+    successCodes: "200"
+    hosts:
+      - host: "docs.dev.tpsonline.com"
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - secretName: platformdocs-dev-tls
+        hosts:
+          - "docs.dev.tpsonline.com"
+  route:
+    enabled: false
+  image:
+    tag: release-f72b99e37609274ea19bf41540c1ad90165a9c9b
+channelService:
+  image:
+    tag: M-0.0.1
+messageStore:
+  image:
+    tag: M-0.0.1
+messageTransformation:
+  image:
+    tag: v1.0.18
+restServer:
+  image:
+    tag: v2.2.12
+p2pSendingWorker:
+  image:
+    tag: v2.3.4
+configuration:
+  image:
+    tag: M-0.0.2
+routing:
+  image:
+    tag: v0.0.6
+auditTrail:
+  image:
+    tag: v0.0.4
+raastServiceCas:
+  image:
+    tag: M-0.0.1
+raastServiceToken:
+  image:
+    tag: v0.0.7
+raastServiceLdap:
+  image:
+    tag: v0.0.32
+raastCommsApg:
+  image:
+    tag: v0.0.11
+raastCommsIps:
+  image:
+    tag: v2.3.8
+raastCommsBps:
+  image:
+    tag: v2.3.8
+raastPortalOtc:
+  image:
+    tag: v0.0.7
+raastSimulator:
+  backend:
+    image:
+      tag: v0.0.19
+  frontend:
+    image:
+      tag: v0.0.19
+raastBatchWorkflowPacs:
+  image:
+    tag: v0.0.15
+raastBatchWorkflowPrevalidation:
+  image:
+    tag: v0.0.15
+platformBatch:
+  image:
+    tag: M-0.0.1
+casTitlefetchReceiving:
+  image:
+    tag: v2.3.4
+userManagement:
+  authService:
+    image:
+      tag: M-0.0.1
+hostServiceSindhBank:
+  image:
+    tag: v0.0.9
+sindhBankHostSimulator:
+  image:
+    tag: v0.0.3
+raastCommsInrt:
+  image:
+    tag: "2.3.6"
+p2pHostWorker:
+  image:
+    tag: v2.3.4
+p2pReceivingWorker:
+  image:
+    tag: v2.3.4

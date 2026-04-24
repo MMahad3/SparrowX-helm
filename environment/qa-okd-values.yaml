@@ -1,0 +1,378 @@
+# ==============================================================================
+# Environment overrides — qa-okd (OpenShift / OKD)
+#
+# Layered on top of chart/values.yaml at deploy time:
+#   helm upgrade ... -f chart/values.yaml -f environments/values-qa-okd.yaml
+#
+# Rules:
+#   - Only override what differs from chart/values.yaml defaults.
+#   - Image tags are stored alongside environment overrides in this file.
+#     Updated automatically via .github/workflows/update-image-tag.yaml.
+#   - Sensitive values (passwords, tokens) are NOT stored here — they are
+#     read from HashiCorp Vault / External Secrets Operator at runtime.
+# ==============================================================================
+global:
+  environment: "qa"
+  # OpenShift SCCs assign UIDs from the namespace range — do not pin runAsUser.
+  # Leaving these empty lets OKD's restricted-v2 SCC manage the security context.
+  podSecurityContext: {}
+  containerSecurityContext: {}
+  # Infrastructure service endpoints — same cluster-local DNS as defaults.
+  # Listed here for clarity and easy override per OKD cluster.
+  infrastructure:
+    redis:
+      host: "redis-master.platformx-infra.svc.cluster.local"
+      port: "6379"
+      password: "redis"  # override via vault/ESO at runtime
+    temporal:
+      host: "temporal-frontend.platformx-infra.svc.cluster.local"
+      port: "7233"
+      namespace: "default"
+    postgres:
+      host: "postgresql.platformx-infra.svc.cluster.local"
+      port: "5432"
+      username: "postgres"
+      database: "platformdb"
+      schemaNames: "channel messagestore routing configuration notificationgateway"
+    vault:
+      host: "http://vault.platformx-infra.svc.cluster.local"
+      port: 8200
+      address: "http://vault.platformx-infra.svc.cluster.local:8200"
+      
+  observability:
+    zipkinEndpoint: "http://zipkin.platformx-observability.svc.cluster.local:9411/api/v2/spans"
+    otelCollectorGrpcEndpoint: "http://otel-collector-opentelemetry-collector.platformx-observability.svc.cluster.local:4317"
+    otelCollectorEndpoint: "http://otel-collector-opentelemetry-collector.platformx-observability.svc.cluster.local:4318"
+    grafanaEndPoint: "http://grafana.platformx-observability.svc.cluster.local:3000"
+    enableTracing: "true"
+    enableMetrics: "true"
+  # ==============================================================================
+  # QA-specific overrides for chart/values.yaml global.shared anchors.
+  # Defined here as YAML anchors so they can be referenced throughout this file
+  # without repetition. Update a value here and it propagates everywhere below.
+  # ==============================================================================
+  shared:
+    keycloakUrl:       &keycloakUrl       "https://os-qa-keycloak.tpsonline.com"
+    keycloakIssuer:    &keycloakIssuer    "https://os-qa-keycloak.tpsonline.com/realms/platformx"
+    metabasePublicUrl: &metabasePublicUrl "https://os-qa-metabase.tpsonline.com"
+    metabaseApiKey:    &metabaseApiKey    "mb_oW320nWejnlef4GXy57RJvHKW9NavlWyqZXjFE7RvW4="
+    metabaseSecretKey: &metabaseSecretKey "63d47ca91fa82b9861cf4aa5896b1e649280c5923e4386f990217665a95d4316"
+    flagsmithApiUrl:   &flagsmithApiUrl   "http://flagsmith-api.platformx-qa.svc.cluster.local:8000"
+    flagsmithApiV1Url: &flagsmithApiV1Url "http://flagsmith-api.platformx-qa.svc.cluster.local:8000/api/v1/"
+    flagsmithEnvKey:   &flagsmithEnvKey   "ser.Q98WZ3Yv9rTFcJfSUbQuTR"
+    novuApiKey:        &novuApiKey        "ebce09501922484d1f9a02501f0aba47"
+    # Token must come from Vault/ESO at runtime; never commit real values.
+    vaultToken:        &vaultToken        ""
+
+# ==============================================================================
+# Vault root token — used by the vault-token-secret and raastServiceLdap.
+# ==============================================================================
+secrets:
+  vault:
+    rootToken: *vaultToken
+
+# ==============================================================================
+# OKD storage class (thin-csi for OpenShift on vSphere/bare-metal)
+# Change to managed-csi (Azure ARO) or gp3-csi (ROSA) if applicable.
+# ==============================================================================
+postgresRaast:
+  persistence:
+    storageClass: thin-csi
+
+redisRaast:
+  persistence:
+    storageClass: thin-csi
+
+# ==============================================================================
+# BACKOFFICE
+# External-facing: Route enabled, Ingress disabled.
+# Config overrides: Keycloak, Metabase, Flagsmith, Novu — all env-specific.
+# ==============================================================================
+backoffice:
+  ingress:
+    enabled: false
+  route:
+    enabled: true
+    hosts:
+      - host: "os-qa-backoffice.tpsonline.com"
+    tls:
+      insecureEdgeTerminationPolicy: Redirect
+      tlsTermination: edge
+  image:
+    tag: v0.1.46
+  config:
+    AD_KEYCLOAK_INTERNAL_ISSUER: *keycloakIssuer
+    AD_KEYCLOAK_ISSUER: *keycloakIssuer
+    FLAGSMITH_API_URL: *flagsmithApiUrl
+    FLAGSMITH_ENVIRONMENT_KEY: *flagsmithEnvKey
+    KEYCLOAK_URL: *keycloakUrl
+    METABASE_API_KEY: *metabaseApiKey
+    METABASE_DATABASE_ID: "5"
+    METABASE_PUBLIC_URL: *metabasePublicUrl
+    METABASE_SECRET_KEY: *metabaseSecretKey
+    METABASE_SITE_URL: *metabasePublicUrl
+    NEXT_PUBLIC_API_URL: "https://os-qa-usermanagement.tpsonline.com/api/v1"
+    NEXT_PUBLIC_KEYCLOAK_ISSUER: *keycloakIssuer
+    NEXTAUTH_URL: "https://os-qa-backoffice.tpsonline.com"
+    NOTIFICATION_ALERTS_GATEWAY_API_KEY: *novuApiKey
+
+# ==============================================================================
+# CHANNEL SERVICE
+# Ports: 8080 (http), 8443 (https), 9091 (metrics/dapr)
+# ==============================================================================
+channelService:
+  image:
+    tag: M-0.0.1
+
+# ==============================================================================
+# MESSAGE STORE
+# Ports: 8080 (http), 8081 (grpc), 9090 (metrics/dapr)
+# ==============================================================================
+messageStore:
+  image:
+    tag: M-0.0.1
+
+# ==============================================================================
+# MESSAGE TRANSFORMATION
+# Ports: 50053 (grpc), 9090 (metrics) — http/9191 port not exposed on OKD.
+# CA certificate required for mTLS with external CAS endpoint.
+# ==============================================================================
+messageTransformation:
+  service:
+    type: ClusterIP
+    ports:
+      - name: grpc
+        port: 50053
+        targetPort: 50053
+      - name: metrics
+        port: 9090
+        targetPort: 9090
+  image:
+    tag: v1.0.18
+
+# ==============================================================================
+# REST SERVER
+# External-facing: Route enabled, Ingress disabled.
+# ==============================================================================
+restServer:
+  ingress:
+    enabled: false
+  route:
+    enabled: true
+    hosts:
+      - host: "service.tpsonline.com"
+    tls:
+      insecureEdgeTerminationPolicy: Redirect
+      tlsTermination: edge
+  image:
+    tag: v2.2.12
+
+# ==============================================================================
+# P2P SENDING WORKER
+# ==============================================================================
+p2pSendingWorker:
+  image:
+    tag: v2.3.4
+
+# ==============================================================================
+# CONFIGURATION SERVICE
+# ==============================================================================
+configuration:
+  image:
+    tag: M-0.0.2
+
+# ==============================================================================
+# ROUTING SERVICE
+# ==============================================================================
+routing:
+  image:
+    tag: v0.0.6
+
+# ==============================================================================
+# AUDIT TRAIL
+# Port: 5000 (single http port)
+# ==============================================================================
+auditTrail:
+  service:
+    type: ClusterIP
+    port: 5000
+  image:
+    tag: v0.0.4
+
+# ==============================================================================
+# RAAST SERVICE CAS
+# ==============================================================================
+raastServiceCas:
+  image:
+    tag: M-0.0.1
+
+# ==============================================================================
+# RAAST PORTAL OTC
+# External-facing: Route enabled, Ingress disabled.
+# Keycloak URL is env-specific.
+# ==============================================================================
+raastPortalOtc:
+  ingress:
+    enabled: false
+  route:
+    enabled: true
+    hosts:
+      - host: "raast-portal-otc.tpsonline.com"
+    tls:
+      insecureEdgeTerminationPolicy: Redirect
+      tlsTermination: edge
+  image:
+    tag: v0.0.7
+  config:
+    METABASE_API_KEY: *metabaseApiKey
+    METABASE_PUBLIC_URL: *metabasePublicUrl
+    METABASE_SECRET_KEY: *metabaseSecretKey
+    METABASE_SITE_URL: *metabasePublicUrl
+    NEXT_PUBLIC_KEYCLOAK_URL: *keycloakUrl
+
+# ==============================================================================
+# NOTIFICATION GATEWAY
+# External-facing: Route enabled, Ingress disabled.
+# ==============================================================================
+notificationGateway:
+  ingress:
+    enabled: false
+  route:
+    enabled: true
+    hosts:
+      - host: "notificationgateway.tpsonline.com"
+    tls:
+      insecureEdgeTerminationPolicy: Redirect
+      tlsTermination: edge
+  image:
+    tag: M-0.0.1
+  config:
+    NOTIFICATION_GATEWAY_NOVU_SECRET_KEY_NAME_value: *novuApiKey
+
+# ==============================================================================
+# PLATFORM DOCS
+# External-facing: Route enabled, Ingress disabled.
+# ==============================================================================
+platformDocs:
+  ingress:
+    enabled: false
+  route:
+    enabled: true
+    hosts:
+      - host: "platformx-docs.tpsonline.com"
+    tls:
+      insecureEdgeTerminationPolicy: Redirect
+      tlsTermination: edge
+  image:
+    tag: release-f72b99e37609274ea19bf41540c1ad90165a9c9b
+
+# ==============================================================================
+# USER MANAGEMENT
+# External-facing: Route enabled, Ingress disabled.
+# Keycloak URL is env-specific.
+# ==============================================================================
+userManagement:
+  ingress:
+    enabled: false
+  route:
+    enabled: true
+    hosts:
+      - host: "usermanagement.tpsonline.com"
+    tls:
+      insecureEdgeTerminationPolicy: Redirect
+      tlsTermination: edge
+  service:
+    port: 5000
+    targetPort: 5000
+  image:
+    tag: M-0.0.1
+  config:
+    Authentication__Authority: *keycloakIssuer
+    Authentication__ValidIssuers__0: *keycloakIssuer
+    Authentication__ValidIssuers__1: *keycloakIssuer
+    Keycloak__BaseUrl: *keycloakUrl
+    Keycloak__PublicIssuerUrl: *keycloakUrl
+
+# ==============================================================================
+# Image tags — remaining internal services (no external exposure on OKD)
+# ==============================================================================
+raastServiceToken:
+  image:
+    tag: v0.0.7
+raastServiceLdap:
+  image:
+    tag: v0.0.32
+  config:
+    VAULT_TOKEN: *vaultToken
+raastCommsApg:
+  image:
+    tag: v0.0.11
+raastCommsIps:
+  image:
+    tag: v2.3.8
+raastCommsBps:
+  image:
+    tag: v2.3.8
+raastSimulatorBackend:
+  enabled: true
+  image:
+    tag: v0.0.19
+raastSimulatorFrontend:
+  enabled: true
+  image:
+    tag: v0.0.19
+  config:
+    KEYCLOAK_URL: *keycloakUrl
+raastBatchWorkflowPacs:
+  image:
+    tag: v0.0.16.1-beta
+raastBatchWorkflowPrevalidation:
+  image:
+    tag: v0.0.16.1-beta
+platformBatch:
+  image:
+    tag: M-0.0.1
+casTitlefetchReceiving:
+  image:
+    tag: v2.3.4
+hostServiceSindhBank:
+  image:
+    tag: v0.0.21
+sindhBankHostSimulator:
+  image:
+    tag: v0.0.3
+raastCommsInrt:
+  image:
+    tag: "2.3.6"
+p2pHostWorker:
+  image:
+    tag: v2.3.4
+  config:
+    FLAGSMITH_API_URL: *flagsmithApiV1Url
+    FLAGSMITH_ENVIRONMENT_KEY: *flagsmithEnvKey
+p2pReceivingWorker:
+  image:
+    tag: v2.3.4
+
+# ==============================================================================
+# LOOKUP SERVICE
+# OKD: Route enabled, Ingress disabled
+# ==============================================================================
+lookupService:
+  image:
+    tag: "Testing-0.0.0"
+
+  ingress:
+    enabled: false
+
+  route:
+    enabled: true
+    hosts:
+      - host: "platform-service-lookup.tpsonline.com"
+    tls:
+      insecureEdgeTerminationPolicy: Redirect
+      tlsTermination: edge
+
+errorManagement:
+  image:
+    tag: "v0.0.0"
