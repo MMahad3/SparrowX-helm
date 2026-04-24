@@ -67,9 +67,7 @@ global:
 # ==============================================================================
 # Vault root token — used by the vault-token-secret and raastServiceLdap.
 # ==============================================================================
-secrets:
-  vault:
-    rootToken: *vaultToken
+
 
 # ==============================================================================
 # OKD storage class (thin-csi for OpenShift on vSphere/bare-metal)
