@@ -466,7 +466,7 @@ channelService:
   replicas: 1
 
   image:
-    repository: devopstps/platform-service-channel
+    repository: devopstpstps/platform-service-channel
     tag: "M-0.0.1"
     pullPolicy: IfNotPresent
 
@@ -482,7 +482,7 @@ channelService:
   containerSecurityContext: {}
 
   service:
-    type: ClusterIP
+    type: NodePort
     ports:
       - name: http
         port: 8080
@@ -530,6 +530,9 @@ channelService:
   # Synced from: channelservice-config ConfigMap
   config:
     ASPNETCORE_ENVIRONMENT: Development
+      Cache__StateStoreName: "&statestore"
+      DAPR_SECRET_DB_PATH: "&platform-service-channel"
+      DB_HOST: postgresql
     ASPNETCORE_URLS: http://+:8080;https://+:8443
     AuditDaprPubSub__AuditEventsSubscriptionName: audit-trail-service
     AuditDaprPubSub__AuditEventsTopic: audit-events
@@ -561,6 +564,7 @@ channelService:
     SSL_REDIRECT_TO_HTTPS: "false"
     SWAGGER__SERVERURL: /channel
 
+  replicaCount: 25
 # ==============================================================================
 # MESSAGE STORE
 # ==============================================================================
