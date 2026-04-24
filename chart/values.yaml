@@ -530,6 +530,11 @@ channelService:
   # Synced from: channelservice-config ConfigMap
   config:
     ASPNETCORE_ENVIRONMENT: Development
+      CERT_ENV: TEST
+      Dapr__SecretKeyUsername: db-Tps-postgres
+      GITHUB_TOKEN: 12344444
+      GITHUB_USERNAME: Mahad
+      NETWORK_NAME: TPS-network
     ASPNETCORE_URLS: http://+:8080;https://+:8443
     AuditDaprPubSub__AuditEventsSubscriptionName: audit-trail-service
     AuditDaprPubSub__AuditEventsTopic: audit-events
