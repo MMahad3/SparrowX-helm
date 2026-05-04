@@ -1316,6 +1316,7 @@ auditTrail:
 
   dapr:
     enabled: true
+      logLevel: information
     appId: "platform-service-audit-trail"
     appPort: "5000"
     appProtocol: "http"
@@ -1350,6 +1351,8 @@ auditTrail:
   # Synced from: platform-service-audit-trail-config ConfigMap
   config:
     ASPNETCORE_ENVIRONMENT: Development
+      SERVER_PORT: 9090
+      Test: test
     ASPNETCORE_URLS: "http://+:5000"
     AUDIT_EVENTS_SUBSCRIPTION: "audit-trail-service"
     AUDIT_EVENTS_TOPIC: "audit-events"
