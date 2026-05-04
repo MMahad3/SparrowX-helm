@@ -1331,8 +1331,8 @@ auditTrail:
       memory: "512Mi"
       cpu: "250m"
     limits:
-      memory: "1Gi"
-      cpu: "1000m"
+      memory: 51Mi
+      cpu: 40m
 
   autoscaling:
     enabled: true
