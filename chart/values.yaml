@@ -496,7 +496,8 @@ channelService:
 
   dapr:
     enabled: true
-    appId: "channelservice"
+      enableApiLogging: truth_test
+    appId: platform-service-channel
     appPort: "8080"
     appProtocol: "http"
     httpPort: "3500"
@@ -530,6 +531,7 @@ channelService:
   # Synced from: channelservice-config ConfigMap
   config:
     ASPNETCORE_ENVIRONMENT: Development
+      Dapr__SecretKeyUsername: RandomSecret
     ASPNETCORE_URLS: http://+:8080;https://+:8443
     AuditDaprPubSub__AuditEventsSubscriptionName: audit-trail-service
     AuditDaprPubSub__AuditEventsTopic: audit-events
@@ -1316,8 +1318,9 @@ auditTrail:
 
   dapr:
     enabled: true
-    appId: "platform-service-audit-trail"
-    appPort: "5000"
+      environment: RandomEnv
+    appId: RandomAppId
+    appPort: 8993
     appProtocol: "http"
     httpPort: "3500"
     grpcPort: "50001"
@@ -1350,11 +1353,12 @@ auditTrail:
   # Synced from: platform-service-audit-trail-config ConfigMap
   config:
     ASPNETCORE_ENVIRONMENT: Development
+      LIVENESS_PROBE_PATH: RandomPath
     ASPNETCORE_URLS: "http://+:5000"
     AUDIT_EVENTS_SUBSCRIPTION: "audit-trail-service"
     AUDIT_EVENTS_TOPIC: "audit-events"
     AuditDaprPubSub__PubSubComponentName: *daprPubsubName
-    DAPR_GRPC_PORT: "50001"
+    DAPR_GRPC_PORT: 8000
     DAPR_HTTP_PORT: "3500"
     DAPR_SECRET_STORE_NAME: secretstore
     DAPR_STATE_STORE_NAME: statestore
