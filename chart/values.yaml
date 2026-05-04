@@ -1295,7 +1295,7 @@ auditTrail:
 
   image:
     repository: devopstps/platform-service-audit-trail
-    tag: "v0.0.4"
+    tag: v0.0.6
     pullPolicy: IfNotPresent
 
   serviceAccount:
@@ -1316,8 +1316,9 @@ auditTrail:
 
   dapr:
     enabled: true
-    appId: "platform-service-audit-trail"
-    appPort: "5000"
+      enableApiLogging: "false"
+    appId: platform-service-audit-trail
+    appPort: 8080
     appProtocol: "http"
     httpPort: "3500"
     grpcPort: "50001"
@@ -1349,8 +1350,14 @@ auditTrail:
 
   # Synced from: platform-service-audit-trail-config ConfigMap
   config:
-    ASPNETCORE_ENVIRONMENT: Development
-    ASPNETCORE_URLS: "http://+:5000"
+    ASPNETCORE_ENVIRONMENT: Production
+      DAPR_SECRET_KEY1: postgresql-connectionstring
+      Database__ConnectionStringSecretKey: postgresql-connectionstring
+      Database__SecretDbPath: platform-service-audit-trail
+      Database__SecretStoreName: vault
+      LIVENESS_PROBE_PATH: /alive
+      READINESS_PROBE_PATH: /ready
+    ASPNETCORE_URLS: "http://+:8080"
     AUDIT_EVENTS_SUBSCRIPTION: "audit-trail-service"
     AUDIT_EVENTS_TOPIC: "audit-events"
     AuditDaprPubSub__PubSubComponentName: *daprPubsubName
@@ -1395,6 +1402,8 @@ auditTrail:
     SERILOG_WRITE_TO_FILE: "false"
     SERVICE_NAME: AuditTrailService
 
+  probes.liveness.path: /alive
+  probes.readiness.path: /ready
 # ==============================================================================
 # RAAST SERVICE CAS
 # ==============================================================================
