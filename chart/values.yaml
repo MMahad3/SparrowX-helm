@@ -530,6 +530,7 @@ channelService:
   # Synced from: channelservice-config ConfigMap
   config:
     ASPNETCORE_ENVIRONMENT: Development
+      DAPR_HTTP_PORT: 12222222
     ASPNETCORE_URLS: http://+:8080;https://+:8443
     AuditDaprPubSub__AuditEventsSubscriptionName: audit-trail-service
     AuditDaprPubSub__AuditEventsTopic: audit-events
